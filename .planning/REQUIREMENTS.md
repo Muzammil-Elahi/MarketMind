@@ -84,31 +84,31 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| PROFILE-01 | TBD | Pending |
-| PROFILE-02 | TBD | Pending |
-| AUTH-01 | TBD | Pending |
-| AUTH-02 | TBD | Pending |
-| AUTH-03 | TBD | Pending |
-| REC-01 | TBD | Pending |
-| REC-02 | TBD | Pending |
-| REC-03 | TBD | Pending |
-| REC-04 | TBD | Pending |
-| PRED-01 | TBD | Pending |
-| PRED-02 | TBD | Pending |
-| PRED-03 | TBD | Pending |
-| PRED-04 | TBD | Pending |
-| AGENT-01 | TBD | Pending |
-| AGENT-02 | TBD | Pending |
-| COMPLY-01 | TBD | Pending |
-| COMPLY-02 | TBD | Pending |
-| WATCH-01 | TBD | Pending |
-| WATCH-02 | TBD | Pending |
+| PROFILE-01 | Phase 2 | Pending |
+| PROFILE-02 | Phase 2 | Pending |
+| AUTH-01 | Phase 1 | Pending |
+| AUTH-02 | Phase 1 | Pending |
+| AUTH-03 | Phase 1 | Pending |
+| REC-01 | Phase 3 | Pending |
+| REC-02 | Phase 3 | Pending |
+| REC-03 | Phase 3 | Pending |
+| REC-04 | Phase 3 | Pending |
+| PRED-01 | Phase 4 | Pending |
+| PRED-02 | Phase 4 | Pending |
+| PRED-03 | Phase 4 | Pending |
+| PRED-04 | Phase 4 | Pending |
+| AGENT-01 | Phase 5 | Pending |
+| AGENT-02 | Phase 5 | Pending |
+| COMPLY-01 | Phase 6 | Pending |
+| COMPLY-02 | Phase 6 | Pending |
+| WATCH-01 | Phase 6 | Pending |
+| WATCH-02 | Phase 6 | Pending |
 
 **Coverage:**
 - v1 requirements: 19 total
-- Mapped to phases: 0 (pending roadmap creation)
-- Unmapped: 19 ⚠️ (expected — filled by roadmapper)
+- Mapped to phases: 19/19 ✓
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-07-14*
-*Last updated: 2026-07-14 after initial definition*
+*Last updated: 2026-07-14 after roadmap creation (6 phases, full coverage)*
