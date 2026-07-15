@@ -1,0 +1,1 @@
+{"content":"Streamlit's preferred multipage pattern is st.Page + st.navigation with entrypoint-as-router; large apps need explicit planning of data model (DB vs session_state), modular code structure, and clear session_state ownership per page.","source":"web","provider":"websearch","confidence":"MEDIUM","fetched_at":"2026-07-15T03:35:33.692Z","ttl":86400000,"kind":"web"}

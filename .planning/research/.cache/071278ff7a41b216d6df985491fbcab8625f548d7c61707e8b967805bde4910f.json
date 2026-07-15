@@ -1,0 +1,1 @@
+{"content":"LangGraph reached 1.0 LTS with stable graph API; latest ~1.2.x (May 2026). langchain-google-genai v4.0.0+ uses consolidated google-genai SDK under the hood, works as ChatGoogleGenerativeAI within LangGraph nodes.","source":"web","provider":"websearch","confidence":"MEDIUM","fetched_at":"2026-07-15T03:36:26.062Z","ttl":86400000,"kind":"web"}
