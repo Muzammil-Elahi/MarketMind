@@ -31,7 +31,13 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. Repeated price-data fetches for the same ticker within the cache TTL return cached results instead of re-hitting yfinance, and the app degrades gracefully (stale-cache fallback + message, not a crash) when a fetch fails or is rate-limited.
   4. A signed-in user's data written to Supabase in one session is retrievable after logging back in on a new session or device.
   5. The base multipage app shell is navigable, with auth-gated pages rendering only for logged-in users.
-**Plans**: TBD
+**Plans**: 5 plans
+Plans:
+- [ ] 01-01-PLAN.md — Dependency manifest, config module, Supabase profiles schema (RLS + trigger), local Supabase CLI stack
+- [ ] 01-02-PLAN.md — Auth session module: stateless cached client + require_auth() + sign-up/sign-in/magic-link/sign-out
+- [ ] 01-03-PLAN.md — Cache chokepoint: st.cache_data -> SQLite -> tenacity -> yfinance
+- [ ] 01-04-PLAN.md — Login/signup page, placeholder home page, app entrypoint navigation (checkpoint)
+- [ ] 01-05-PLAN.md — Two-session isolation, cross-session persistence, and RLS enforcement tests
 **UI hint**: yes
 
 ### Phase 2: Investor Profile + Feature Engineering Foundation
@@ -100,7 +106,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation — Data Layer, Caching & Auth | 0/TBD | Not started | - |
+| 1. Foundation — Data Layer, Caching & Auth | 0/5 | Not started | - |
 | 2. Investor Profile + Feature Engineering Foundation | 0/TBD | Not started | - |
 | 3. Deterministic Recommendation Engine | 0/TBD | Not started | - |
 | 4. Multi-Model Prediction + Walk-Forward Backtesting | 0/TBD | Not started | - |
