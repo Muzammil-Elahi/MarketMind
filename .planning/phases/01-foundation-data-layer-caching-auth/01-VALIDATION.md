@@ -40,13 +40,13 @@ created: 2026-07-17
 
 | Task ID | Plan | Wave | Requirement | Threat Ref | Secure Behavior | Test Type | Automated Command | File Exists | Status |
 |---------|------|------|-------------|------------|-----------------|-----------|-------------------|-------------|--------|
-| 01-XX-XX | TBD | TBD | AUTH-01 | V2/V3 | Signup + login succeeds via Supabase Auth; session persists across reload | integration | `pytest tests/test_auth_flow.py -x` | ❌ W0 | ⬜ pending |
-| 01-XX-XX | TBD | TBD | AUTH-02 | V4 | Signed-in user's `profiles` row is written and re-readable in a new session | integration | `pytest tests/test_profile_persistence.py -x` | ❌ W0 | ⬜ pending |
-| 01-XX-XX | TBD | TBD | AUTH-03 | V3 | Two concurrent sessions never cross-contaminate `session_state` or any `cache_resource`-wrapped object | integration (`AppTest`) | `pytest tests/test_auth_isolation.py -x` | ❌ W0 | ⬜ pending |
-| 01-XX-XX | TBD | TBD | AUTH-03 (RLS) | V4 | A user cannot read/write another user's `profiles` row at the database level | integration (pgTAP or dual-client) | `supabase test db` or `pytest tests/test_rls_policy.py -x` | ❌ W0 | ⬜ pending |
-| 01-XX-XX | TBD | TBD | Cache/backoff (success criterion #3) | — | Repeated fetch within TTL hits cache; simulated failure degrades gracefully | unit (mocked yfinance/tenacity) | `pytest tests/test_cache.py -x` | ❌ W0 | ⬜ pending |
+| 01-02-02 | 01-02 | 2 | AUTH-01 | V2/V3 | Signup + login succeeds via Supabase Auth; session persists across reload | integration | `pytest tests/test_auth_flow.py -x` | ❌ W0 | ⬜ pending |
+| 01-05-02 | 01-05 | 4 | AUTH-02 | V4 | Signed-in user's `profiles` row is written and re-readable in a new session | integration | `pytest tests/test_profile_persistence.py -x` | ❌ W0 | ⬜ pending |
+| 01-05-01 | 01-05 | 4 | AUTH-03 | V3 | Two concurrent sessions never cross-contaminate `session_state` or any `cache_resource`-wrapped object | integration (`AppTest`) | `pytest tests/test_auth_isolation.py -x` | ❌ W0 | ⬜ pending |
+| 01-05-02 | 01-05 | 4 | AUTH-03 (RLS) | V4 | A user cannot read/write another user's `profiles` row at the database level | integration (pgTAP or dual-client) | `supabase test db` or `pytest tests/test_rls_policy.py -x` | ❌ W0 | ⬜ pending |
+| 01-03-01 | 01-03 | 2 | Cache/backoff (success criterion #3) | — | Repeated fetch within TTL hits cache; simulated failure degrades gracefully | unit (mocked yfinance/tenacity) | `pytest tests/test_cache.py -x` | ❌ W0 | ⬜ pending |
 
-*Task IDs and Plan/Wave columns are TBD until the planner assigns concrete plan/task numbers — the planner must fill these in when tasks referencing these requirements are created.*
+*Task ID/Plan/Wave columns backfilled from the finalized Phase 1 plans (01-01 through 01-05); 01-05-02 covers both the AUTH-02 and AUTH-03 (RLS) rows since Plan 05 Task 2 creates both `tests/test_profile_persistence.py` and `tests/test_rls_policy.py`. File Exists/Status columns remain pending — they flip only after Wave 0 tasks actually execute, per the phase lifecycle (not part of this planning revision).*
 
 *Status: ⬜ pending · ✅ green · ❌ red · ⚠️ flaky*
 

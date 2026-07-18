@@ -467,15 +467,15 @@ def require_auth():
 
 ## Open Questions
 
-1. **Exact current Supabase free-tier project-pause behavior (7-day inactivity)**
+1. **Exact current Supabase free-tier project-pause behavior (7-day inactivity)** (RESOLVED — non-blocking for Phase 1, revisit at deployment/hardening phase)
    - What we know: Project-level PITFALLS.md documents a 7-day database-inactivity pause on the free tier as a known constraint (not re-verified in this research pass, since it's not specific to Phase 1's implementation questions).
    - What's unclear: Whether a scheduled lightweight query/ping is needed starting this phase, or can wait until closer to deployment.
    - Recommendation: Not blocking for Phase 1 planning (no live deployment happens in this phase); flag for the deployment/hardening phase as project-level research already does.
 
-2. **`AuthApiError` import path stability across `supabase-py` minor versions**
+2. **`AuthApiError` import path stability across `supabase-py` minor versions** (RESOLVED — deferred to implementation time, see 01-02 Task 2)
    - What we know: The current pattern is `from supabase_auth.errors import AuthApiError` (confirmed via WebSearch-sourced community example, not an official docs page fetched directly in this session).
    - What's unclear: Whether this import path is guaranteed stable/public API vs. an internal path that could move between `supabase-py` releases.
-   - Recommendation: Planner/implementer should confirm the exact exception import at implementation time by inspecting the installed `supabase`/`supabase_auth` package's `__init__.py`, rather than trusting this path as authoritative — treat as `[ASSUMED]`.
+   - Recommendation: Planner/implementer should confirm the exact exception import at implementation time by inspecting the installed `supabase`/`supabase_auth` package's `__init__.py`, rather than trusting this path as authoritative — treat as `[ASSUMED]`. 01-02-PLAN.md Task 2's action explicitly requires verifying this import path against the installed package before use.
 
 ## Environment Availability
 
