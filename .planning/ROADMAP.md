@@ -35,7 +35,7 @@ Decimal phases appear between their surrounding integers in numeric order.
   4. A signed-in user's data written to Supabase in one session is retrievable after logging back in on a new session or device.
   5. The base multipage app shell is navigable, with auth-gated pages rendering only for logged-in users.
 
-**Plans**: 2/5 plans executed
+**Plans**: 3/5 plans executed
 Plans:
 **Wave 1**
 
@@ -44,7 +44,7 @@ Plans:
 **Wave 2** *(blocked on Wave 1 completion)*
 
 - [x] 01-02-PLAN.md — Auth session module: stateless cached client + require_auth() + sign-up/sign-in/magic-link/sign-out
-- [ ] 01-03-PLAN.md — Cache chokepoint: st.cache_data -> SQLite -> tenacity -> yfinance
+- [x] 01-03-PLAN.md — Cache chokepoint: st.cache_data -> SQLite -> tenacity -> yfinance
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
@@ -137,7 +137,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation — Data Layer, Caching & Auth | 2/5 | In Progress|  |
+| 1. Foundation — Data Layer, Caching & Auth | 3/5 | In Progress|  |
 | 2. Investor Profile + Feature Engineering Foundation | 0/TBD | Not started | - |
 | 3. Deterministic Recommendation Engine | 0/TBD | Not started | - |
 | 4. Multi-Model Prediction + Walk-Forward Backtesting | 0/TBD | Not started | - |
