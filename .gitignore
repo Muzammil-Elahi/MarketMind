@@ -1,0 +1,16 @@
+# Secrets — never commit real values
+.streamlit/secrets.toml
+.env
+
+# Local disk cache
+data/*.db
+data/*.db-journal
+
+# Supabase CLI local state
+supabase/.branches/
+supabase/.temp/
+
+# Python
+__pycache__/
+.pytest_cache/
+*.pyc
