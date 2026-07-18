@@ -5,15 +5,15 @@ milestone_name: milestone
 current_phase: 01
 current_phase_name: foundation-data-layer-caching-auth
 status: executing
-stopped_at: Completed 01-01-PLAN.md
-last_updated: "2026-07-18T20:59:58.687Z"
+stopped_at: Completed 01-02-PLAN.md
+last_updated: "2026-07-18T21:17:29.713Z"
 last_activity: 2026-07-18
 last_activity_desc: Phase 01 execution started
 progress:
   total_phases: 1
   completed_phases: 0
   total_plans: 5
-  completed_plans: 1
+  completed_plans: 2
 ---
 
 # Project State
@@ -28,11 +28,11 @@ See: .planning/PROJECT.md (updated 2026-07-14)
 ## Current Position
 
 Phase: 01 (foundation-data-layer-caching-auth) — EXECUTING
-Plan: 2 of 5
+Plan: 3 of 5
 Status: Ready to execute
 Last activity: 2026-07-18 — Phase 01 execution started
 
-Progress: [██░░░░░░░░] 20%
+Progress: [████░░░░░░] 40%
 
 ## Performance Metrics
 
@@ -59,6 +59,7 @@ Progress: [██░░░░░░░░] 20%
 | Plan | Duration | Tasks | Files |
 |------|----------|-------|-------|
 | Phase 01 P01 | 20min | 3 tasks | 13 files |
+| Phase 01 P02 | 30min | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -71,6 +72,8 @@ Recent decisions affecting current work:
 - Roadmap: Phase 1 establishes generic Supabase persistence + session isolation; Phases 2 and 6 exercise that same persistence pattern for profile and watchlist data respectively rather than rebuilding it (covers AUTH-02 across phases).
 - Roadmap: Compliance disclaimer/non-directive-copy requirements (COMPLY-01/02) are delivered as a final audit pass in Phase 6, once all recommendation/prediction views exist — but per research, the disclaimer UI component itself should be introduced early (as early as Phase 3) and simply gets audited/consolidated in Phase 6, not built from scratch there.
 - [Phase ?]: Local Supabase CLI Docker stack (not mock, not live cloud) is the test backend for Phase 1 automated tests
+- [Phase ?]: D-06 resolved: Supabase client is st.cache_resource-shared (stateless), tokens live only in st.session_state
+- [Phase ?]: require_auth() explicitly returns None after st.stop() so the gate is unit-testable outside a running Streamlit script context
 
 ### Pending Todos
 
@@ -95,6 +98,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-07-18T20:59:58.671Z
-Stopped at: Completed 01-01-PLAN.md
+Last session: 2026-07-18T21:17:29.694Z
+Stopped at: Completed 01-02-PLAN.md
 Resume file: None

@@ -14,7 +14,7 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Authentication & Persistence
 
-- [ ] **AUTH-01**: User can sign up and log in (Supabase auth)
+- [x] **AUTH-01**: User can sign up and log in (Supabase auth)
 - [x] **AUTH-02**: User's profile, watchlist, and history persist across sessions and devices
 - [x] **AUTH-03**: Auth/session state is strictly scoped per user (no session or cached-object leakage across concurrent users)
 
@@ -86,7 +86,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 |-------------|-------|--------|
 | PROFILE-01 | Phase 2 | Pending |
 | PROFILE-02 | Phase 2 | Pending |
-| AUTH-01 | Phase 1 | Pending |
+| AUTH-01 | Phase 1 | Complete |
 | AUTH-02 | Phase 1 | Complete |
 | AUTH-03 | Phase 1 | Complete |
 | REC-01 | Phase 3 | Pending |
