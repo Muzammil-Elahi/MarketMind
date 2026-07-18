@@ -9,9 +9,13 @@ Every submit path is wrapped in an ``st.form``. Streamlit's ``st.form``/
 ``st.text_input`` provide no built-in required-field blocking (unlike HTML5
 ``required`` inputs) — an empty ``st.form_submit_button`` press still
 submits. Each handler below therefore guards explicitly: if a required field
-is blank (or whitespace-only) the handler returns before calling into
-``src.auth.session`` at all, so no auth call is ever made with empty
-credentials (UI-SPEC empty-state row).
+is blank (or whitespace-only), the handler renders a plain ``st.warning``
+telling the user which field(s) to fill in and returns before calling into
+``src.auth.session`` at all — so no auth call is ever made with empty
+credentials, and the user is never left without feedback (UI-SPEC empty-state
+row; the "no custom empty-state copy needed" assumption at UI-SPEC line 109
+does not hold in practice, since Streamlit has no native required-field
+blocking or visual cue).
 """
 
 import streamlit as st
@@ -23,6 +27,13 @@ INVALID_CREDENTIALS_ERROR = (
     "We couldn't verify that email and password. Double-check them and try again."
 )
 MAGIC_LINK_FAILURE_ERROR = "We couldn't send your login link. Check your email address and try again."
+
+# Empty-required-field validation copy. Streamlit's st.form/st.text_input have no
+# built-in required-field blocking (see module docstring) — these messages fill that
+# gap. They are distinct from INVALID_CREDENTIALS_ERROR/MAGIC_LINK_FAILURE_ERROR,
+# which are reserved for actual failed auth attempts against non-empty credentials.
+EMPTY_EMAIL_AND_PASSWORD_WARNING = "Please enter both your email and password."
+EMPTY_EMAIL_WARNING = "Please enter an email address."
 
 
 def render_login_page() -> None:
@@ -44,6 +55,8 @@ def render_login_page() -> None:
                 st.rerun()
             except AuthApiError:
                 st.error(INVALID_CREDENTIALS_ERROR)
+        elif submitted:
+            st.warning(EMPTY_EMAIL_AND_PASSWORD_WARNING)
 
     with create_account_tab:
         with st.form("create_account_form"):
@@ -62,6 +75,8 @@ def render_login_page() -> None:
                 # error text for any signup failure, including a duplicate
                 # email attempt.
                 st.error(INVALID_CREDENTIALS_ERROR)
+        elif submitted:
+            st.warning(EMPTY_EMAIL_AND_PASSWORD_WARNING)
 
     with magic_link_tab:
         with st.form("magic_link_form"):
@@ -73,3 +88,5 @@ def render_login_page() -> None:
                 st.info("Check your email for a login link.")
             except AuthApiError:
                 st.error(MAGIC_LINK_FAILURE_ERROR)
+        elif submitted:
+            st.warning(EMPTY_EMAIL_WARNING)
