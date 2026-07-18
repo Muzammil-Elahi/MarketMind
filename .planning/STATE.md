@@ -5,15 +5,15 @@ milestone_name: milestone
 current_phase: 01
 current_phase_name: foundation-data-layer-caching-auth
 status: executing
-stopped_at: Completed 01-03-PLAN.md
-last_updated: "2026-07-18T21:56:31.829Z"
+stopped_at: Completed 01-04-PLAN.md
+last_updated: "2026-07-18T23:47:19.084Z"
 last_activity: 2026-07-18
 last_activity_desc: Phase 01 execution started
 progress:
   total_phases: 1
   completed_phases: 0
   total_plans: 5
-  completed_plans: 3
+  completed_plans: 4
 ---
 
 # Project State
@@ -28,11 +28,11 @@ See: .planning/PROJECT.md (updated 2026-07-14)
 ## Current Position
 
 Phase: 01 (foundation-data-layer-caching-auth) — EXECUTING
-Plan: 4 of 5
+Plan: 5 of 5
 Status: Ready to execute
 Last activity: 2026-07-18 — Phase 01 execution started
 
-Progress: [██████░░░░] 60%
+Progress: [████████░░] 80%
 
 ## Performance Metrics
 
@@ -61,6 +61,7 @@ Progress: [██████░░░░] 60%
 | Phase 01 P01 | 20min | 3 tasks | 13 files |
 | Phase 01 P02 | 30min | 2 tasks | 5 files |
 | Phase 01 P03 | 15min | 2 tasks | 3 files |
+| Phase 01 P04 | 105min | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -76,6 +77,8 @@ Recent decisions affecting current work:
 - [Phase ?]: D-06 resolved: Supabase client is st.cache_resource-shared (stateless), tokens live only in st.session_state
 - [Phase ?]: require_auth() explicitly returns None after st.stop() so the gate is unit-testable outside a running Streamlit script context
 - [Phase ?]: Cache chokepoint (src/data/cache.py) uses tenacity reraise=True so a total live-fetch failure with no disk cache propagates the original exception type rather than tenacity's RetryError wrapper
+- [Phase ?]: UI-SPEC's assumption that native Streamlit form validation blocks empty-field submission does not hold in practice - added explicit guard-clause + warning copy + red-border highlighting in 01-04 to deliver the intended empty-state behavior
+- [Phase ?]: streamlit run src/app.py requires a repo-root sys.path insertion since Streamlit sets sys.path[0] to the script's own directory, not the project root
 
 ### Pending Todos
 
@@ -100,6 +103,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-07-18T21:56:31.808Z
-Stopped at: Completed 01-03-PLAN.md
+Last session: 2026-07-18T23:47:19.066Z
+Stopped at: Completed 01-04-PLAN.md
 Resume file: None
