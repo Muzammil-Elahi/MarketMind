@@ -13,7 +13,7 @@ Popcorn Pilot is built as a layered pipeline, not a set of independent features:
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Foundation — Data Layer, Caching & Auth** - Cache-first market-data layer and Supabase auth/session foundation with strict per-user isolation
+- [x] **Phase 1: Foundation — Data Layer, Caching & Auth** - Cache-first market-data layer and Supabase auth/session foundation with strict per-user isolation (completed 2026-07-18)
 - [ ] **Phase 2: Investor Profile + Feature Engineering Foundation** - Profile builder UI plus a leakage-safe, point-in-time feature pipeline shared by later models
 - [ ] **Phase 3: Deterministic Recommendation Engine** - Ranked, explainable, cross-asset-class shortlist from the hybrid factor + collaborative scorer, zero LLM dependency
 - [ ] **Phase 4: Multi-Model Prediction + Walk-Forward Backtesting** - Per-asset forecasts (SMA/XGBoost/Prophet) with confidence intervals and walk-forward-validated accuracy
@@ -137,7 +137,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation — Data Layer, Caching & Auth | 5/5 | In Progress|  |
+| 1. Foundation — Data Layer, Caching & Auth | 5/5 | Complete    | 2026-07-18 |
 | 2. Investor Profile + Feature Engineering Foundation | 0/TBD | Not started | - |
 | 3. Deterministic Recommendation Engine | 0/TBD | Not started | - |
 | 4. Multi-Model Prediction + Walk-Forward Backtesting | 0/TBD | Not started | - |
