@@ -12,7 +12,7 @@ A user gets a ranked, explainable shortlist of assets matching their investor pr
 
 ### Validated
 
-(None yet — ship to validate)
+- [x] Multiple users can sign up and log in (Supabase auth — email/password + magic link), with auth/session state strictly scoped per user — Validated in Phase 1: AUTH-01/AUTH-03 proven via 30 automated tests against a real local Supabase stack, including a real cross-user `cache_resource` session-leak vector (found and fixed during Phase 1, not merely assumed absent). Persisted profile/watchlist/history *data* (the rest of AUTH-02) remains scoped to Phase 2 (profile) and Phase 6 (watchlist/history) — Phase 1 validated the underlying persistence infrastructure (RLS-backed `profiles` table, cross-session read/write) those phases will build on.
 
 ### Active
 
@@ -22,7 +22,6 @@ A user gets a ranked, explainable shortlist of assets matching their investor pr
 - [ ] User can see backtested model accuracy (RMSE, directional accuracy, Sharpe) for each prediction
 - [ ] User can optionally include news-sentiment scoring (FinBERT) in predictions
 - [ ] An LLM agent (Gemini free tier via LangGraph) reranks/annotates the traditional recommendations with a plain-English investment thesis and answers follow-up questions
-- [ ] Multiple users can sign up, log in, and have their profile/history persisted (Supabase)
 - [ ] App is deployed and reachable on Streamlit Community Cloud
 
 ### Out of Scope
@@ -57,7 +56,8 @@ A user gets a ranked, explainable shortlist of assets matching their investor pr
 | LLM agent reranks/annotates the traditional hybrid recommendations rather than replacing the scoring engine | Keeps the core recommendation flow deterministic, testable, and cheap; agent adds explainability and Q&A on top | — Pending |
 | Include Forex in the v1 asset universe alongside equity/ETF/crypto/gold | User wants the full asset range from day one; yfinance supports forex pairs natively | — Pending |
 | Start with a smaller model set (SMA baseline + XGBoost + Prophet) instead of all 7 models from the source spec | Reduces v1 complexity/build time; LSTM/ARIMA/Linear Regression added once the core loop works | — Pending |
-| Multi-user with Supabase auth, hosted on Streamlit Community Cloud | Project is meant to be shared, not personal-only; both pieces fit the free-tier budget constraint | — Pending |
+| Multi-user with Supabase auth, hosted on Streamlit Community Cloud | Project is meant to be shared, not personal-only; both pieces fit the free-tier budget constraint | Validated in Phase 1 (auth/session-isolation infrastructure) |
+| Automated tests for Phase 1 run against a local Supabase CLI Docker stack, not mocks or a live cloud project | Lets AUTH-02/AUTH-03 exercise real Postgres RLS and real GoTrue auth flows at zero cost with no cloud account required; a live cloud project is only needed at actual deployment time | Proven in Phase 1 — 30 tests pass against the local stack; pattern available for any later phase needing real auth/DB test coverage |
 
 ## Evolution
 
@@ -77,4 +77,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-07-14 after initialization*
+*Last updated: 2026-07-18 after Phase 1 completion*
