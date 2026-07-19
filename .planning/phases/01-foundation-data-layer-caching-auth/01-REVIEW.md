@@ -33,6 +33,7 @@ findings:
   warning: 5
   info: 3
   total: 9
+critical_fixed: 1
 status: issues_found
 ---
 
@@ -61,7 +62,8 @@ because the `data/` directory it writes to is never created anywhere in the code
 `sqlite3.connect()` does not create missing parent directories. This defeats the entire
 purpose of the disk-cache fallback (D-07/D-08/D-09) — the exact failure mode it was built to
 survive. The existing test suite does not catch this because its isolation fixture points
-`DB_PATH` at pytest's `tmp_path`, which already exists as a directory.
+`DB_PATH` at pytest's `tmp_path`, which already exists as a directory. **This BLOCKER (CR-01)
+has since been fixed** — see the Status note under CR-01 below.
 
 Several warning-level robustness/consistency gaps were also found in the auth gate's error
 handling and the login page's stale-state highlighting, plus a couple of low-severity
@@ -70,6 +72,11 @@ quality nits.
 ## Critical Issues
 
 ### CR-01: SQLite disk cache crashes on first use — `data/` directory is never created
+
+**Status:** Fixed — `_init_db()` now creates `Path(DB_PATH).parent` via
+`mkdir(parents=True, exist_ok=True)` before connecting; regression test
+`test_init_db_creates_missing_parent_directory` added to `tests/test_cache.py`.
+Commit: `f9cd08b` (`fix(01): CR-01 create data/ parent directory before opening SQLite cache`).
 
 **File:** `src/data/cache.py:27, 30-43, 101-122`
 **Issue:** `DB_PATH = "data/price_cache.db"` (line 27) is opened via `sqlite3.connect(DB_PATH)`
