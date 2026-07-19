@@ -103,7 +103,9 @@ Notes:
 
 ## UI Considerations
 
-Applicable state considerations resolved: 10 covered, 3 backstop, 0 unresolved.
+Applicable state considerations resolved: 10 covered, 3 backstop, 3 dismissed, 0 unresolved.
+
+*Element classification note: running the compiled ui-consideration-probe engine against this spec's two surfaces classified the scalar-fields form (E1) as matching `form` + `list-collection` + `interactive-control` kinds — the `list-collection` match is a prose false positive (tripped by "profile **row** exists," a database-row reference, not a UI list-row) rather than a genuine repeating-collection element. Per the propose-then-confirm rule, the three list-collection-only categories it raised for E1 are resolved below as explicitly dismissed (not silently dropped) rather than omitted.*
 
 | Category | Element(s) | Status | Resolution / Reason |
 |----------|------------|--------|---------------------|
@@ -120,12 +122,16 @@ Applicable state considerations resolved: 10 covered, 3 backstop, 0 unresolved.
 | zero-one-many | Holdings grid (0 / 1 / many rows) | ✅ covered | The "Existing Holdings" section heading and grid column headers are count-agnostic (no singular/plural copy variants needed) — a table view naturally scales from 0 to many rows without copy changes; the 0-row case is additionally covered by the empty-state row above. |
 | long-text | Scalar-fields form (no free-text inputs) | ✅ covered | All scalar fields are `st.selectbox`/`st.multiselect`/`st.checkbox`/`st.number_input` — none accept free-text entry, so long-text overflow does not apply to this element's actual field set. |
 | long-text | Holdings grid (ticker cell — unusually long or malformed entry) | 🧪 backstop | `st.data_editor`'s native text-cell behavior (fixed-width column, no custom wrapping) is expected to handle an oversized ticker string without breaking layout; not specified further, verified at implementation/visual-QA time. Malformed/invalid tickers are caught by the D-08 submit-time validation above regardless of display length. |
+| populated | Scalar-fields form (probe-detected, `list-collection` false positive) | ➖ dismissed | Not applicable — E1 is a single scalar-fields form, not a repeating collection; there is no "typical volume of content" state distinct from the empty/partial/complete states already covered above. |
+| overflow | Scalar-fields form (probe-detected, `list-collection` false positive) | ➖ dismissed | Not applicable — E1 has a fixed, small set of scalar fields (6 fields), none of which can exceed their container; overflow only applies to the holdings grid, already covered above. |
+| zero-one-many | Scalar-fields form (probe-detected, `list-collection` false positive) | ➖ dismissed | Not applicable — E1 is not an item collection; there is exactly one form instance per user, so zero/one/many singular-vs-plural copy concerns don't arise (contrast with the holdings grid, a genuine collection, covered above). |
 
 <!-- Status vocabulary (locked by probe-core projectTruths):
-     ✅ covered   → a plain truth string lifted into must_haves.truths
-     🧪 backstop  → a flat scalar { statement, verification: backstop }; at verify time, no explicit
-                    evidence → insufficient_spec → human_needed (never a silent pass, #1154)
+     ✅ covered    → a plain truth string lifted into must_haves.truths
+     🧪 backstop   → a flat scalar { statement, verification: backstop }; at verify time, no explicit
+                     evidence → insufficient_spec → human_needed (never a silent pass, #1154)
      ⚠ unresolved → an explicit planner assumption (surfaced, never silently dropped)
+     ➖ dismissed  → not applicable, accompanied by a required reason; not lifted into must_haves
      Rows are REPLACED (not appended) on a probe re-run — idempotent. -->
 
 ---
