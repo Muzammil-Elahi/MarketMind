@@ -104,6 +104,22 @@ def test_format_stale_cache_message_matches_ui_spec_copywriting_contract():
     )
 
 
+def test_init_db_creates_missing_parent_directory(tmp_path, monkeypatch):
+    """CR-01 regression: on a fresh checkout/deployment the parent directory
+    of DB_PATH does not exist yet, and sqlite3.connect() does not create it.
+    _init_db() must create it explicitly so the very first fetch_ohlcv()
+    call does not crash with OperationalError."""
+    nested_db_path = tmp_path / "nested" / "does" / "not" / "exist" / "price_cache.db"
+    monkeypatch.setattr(cache, "DB_PATH", str(nested_db_path))
+
+    assert not nested_db_path.parent.exists()
+
+    cache._init_db()
+
+    assert nested_db_path.parent.is_dir()
+    assert nested_db_path.exists()
+
+
 def test_sql_statements_use_parameterized_placeholders_not_string_interpolation():
     """Structural check (per plan, not a runtime behavior test): every SQL
     statement referencing ticker/period uses `?` placeholders bound via a

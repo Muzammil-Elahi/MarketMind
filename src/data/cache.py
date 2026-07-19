@@ -12,6 +12,7 @@ cross-module entry point for price data (RESEARCH.md Pattern 3).
 import io
 import sqlite3
 import time
+from pathlib import Path
 from typing import Optional, Tuple
 
 import pandas as pd
@@ -28,7 +29,8 @@ DB_PATH = "data/price_cache.db"
 
 
 def _init_db() -> None:
-    """Create the price_cache table if it does not already exist."""
+    """Create the price_cache table (and its parent directory) if needed."""
+    Path(DB_PATH).parent.mkdir(parents=True, exist_ok=True)
     with sqlite3.connect(DB_PATH) as conn:
         conn.execute(
             """
