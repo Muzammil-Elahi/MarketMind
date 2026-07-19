@@ -80,3 +80,15 @@ def test_user_factory(supabase_env):
         return email, TEST_PASSWORD, response
 
     return _make_user
+
+
+@pytest.fixture
+def two_users(test_user_factory):
+    """Return (user_a, user_b): two distinct real users against the local
+    Supabase stack, each as an (email, password, sign_up_response) tuple.
+
+    Used by Plan 05's session-isolation (test_auth_isolation.py) and RLS
+    (test_rls_policy.py) tests, both of which need more than one distinct
+    real user within the same test.
+    """
+    return test_user_factory(), test_user_factory()

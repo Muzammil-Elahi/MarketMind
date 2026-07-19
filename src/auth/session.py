@@ -12,16 +12,45 @@ Per-user identity (`access_token`, `refresh_token`, `logged_in`) lives
 exclusively in `st.session_state` — this module never stores a token on the
 shared `get_supabase_client()` `cache_resource` instance (see
 `src/data/supabase_client.py`'s docstring; threat register T-01-01).
+
+Every authenticating call (sign-up, password sign-in, magic-link sign-in,
+session refresh) is routed through `_scoped_client()` — a fresh, uncached
+`create_client(...)` built for that one call only — never through the
+shared `get_supabase_client()`. This is not optional: `supabase-auth`'s
+`sign_in_with_password()`, `sign_up()`, `sign_in_with_otp()`, and
+`refresh_session()` all internally call `_save_session()`/`_remove_session()`
+on whichever client instance they're invoked on. Calling any of them on the
+shared, process-wide `get_supabase_client()` instance would persist one
+user's session onto that object (or wipe another in-flight user's), which is
+exactly the cross-user leak this phase's threat model (T-01-01) and D-05's
+isolation test exist to catch. Only genuinely stateless calls that take an
+explicit token/JWT argument (`get_user(token)`,
+`admin.sign_out(access_token, scope)`) are made against the shared client.
 """
 
+from contextlib import suppress
 from datetime import datetime, timezone
 
 import streamlit as st
-from supabase import create_client
+from supabase import Client, create_client
 from supabase_auth.errors import AuthApiError
 
 from src.config import get_config
 from src.data.supabase_client import get_supabase_client
+
+
+def _scoped_client() -> Client:
+    """Build a fresh, uncached Supabase client for one authenticating call.
+
+    Every authenticating call (sign-up, sign-in, magic-link, refresh) must
+    go through a client built here — never the shared
+    `get_supabase_client()` `cache_resource` instance — so no user's session
+    ever gets persisted onto that process-wide, supposedly-stateless object.
+    The client returned here goes out of scope immediately after its single
+    call and is never stored in `st.session_state` or any cached/global
+    object (same discipline as `_touch_last_login`, below).
+    """
+    return create_client(get_config("SUPABASE_URL"), get_config("SUPABASE_ANON_KEY"))
 
 
 def sign_up(email: str, password: str):
@@ -44,7 +73,7 @@ def sign_up(email: str, password: str):
     second ``profiles`` row is created, since the trigger only fires on a
     genuine new ``auth.users`` insert.
     """
-    response = get_supabase_client().auth.sign_up({"email": email, "password": password})
+    response = _scoped_client().auth.sign_up({"email": email, "password": password})
     if response.session is not None:
         st.session_state["access_token"] = response.session.access_token
         st.session_state["refresh_token"] = response.session.refresh_token
@@ -62,9 +91,7 @@ def sign_in(email: str, password: str):
 
     Raises ``AuthApiError`` on invalid credentials.
     """
-    response = get_supabase_client().auth.sign_in_with_password(
-        {"email": email, "password": password}
-    )
+    response = _scoped_client().auth.sign_in_with_password({"email": email, "password": password})
     st.session_state["access_token"] = response.session.access_token
     st.session_state["refresh_token"] = response.session.refresh_token
     st.session_state["logged_in"] = True
@@ -79,7 +106,7 @@ def sign_in_with_magic_link(email: str) -> None:
     (handled by whatever page the redirect target renders) — this call only
     triggers the send and does not raise for a valid, existing email.
     """
-    get_supabase_client().auth.sign_in_with_otp({"email": email})
+    _scoped_client().auth.sign_in_with_otp({"email": email})
 
 
 def require_auth():
@@ -89,10 +116,11 @@ def require_auth():
     server-side via ``get_user(token)`` — never the client-trusted,
     locally-cached ``get_session()`` accessor (D-04). If the access
     token is rejected but a ``refresh_token`` is present, attempts
-    ``refresh_session()`` and retries ``get_user()`` once with the refreshed
-    token before giving up. On any failure, clears the auth keys from
-    ``st.session_state`` and halts rendering (``st.stop()``) so no gated
-    content renders past this point.
+    ``refresh_session()`` via a short-lived scoped client (never the shared
+    ``get_supabase_client()`` — see module docstring) and retries
+    ``get_user()`` once with the refreshed token before giving up. On any
+    failure, clears the auth keys from ``st.session_state`` and halts
+    rendering (``st.stop()``) so no gated content renders past this point.
 
     Returns the server-verified ``User`` object on success. When the caller
     is not authenticated, calls ``st.stop()`` and returns ``None`` — the
@@ -113,7 +141,7 @@ def require_auth():
     refresh_token = st.session_state.get("refresh_token")
     if refresh_token:
         try:
-            refreshed = get_supabase_client().auth.refresh_session(refresh_token)
+            refreshed = _scoped_client().auth.refresh_session(refresh_token)
             st.session_state["access_token"] = refreshed.session.access_token
             st.session_state["refresh_token"] = refreshed.session.refresh_token
             return get_supabase_client().auth.get_user(refreshed.session.access_token).user
@@ -130,10 +158,18 @@ def sign_out() -> None:
 
     Clears only this session's ``st.session_state`` auth keys — never a
     shared/global object — and revokes the current session server-side via
-    the shared, stateless client.
+    the shared, stateless client's ``admin.sign_out(access_token, scope)`` —
+    a stateless call that takes the token explicitly rather than the
+    stateful ``auth.sign_out()`` wrapper, which looks up the token via
+    ``get_session()`` and would only work by relying on a session having
+    been persisted onto the shared client (exactly what this module must
+    never do; see module docstring).
     """
+    access_token = st.session_state.get("access_token")
     try:
-        get_supabase_client().auth.sign_out()
+        if access_token:
+            with suppress(AuthApiError):
+                get_supabase_client().auth.admin.sign_out(access_token, "global")
     finally:
         st.session_state.pop("access_token", None)
         st.session_state.pop("refresh_token", None)
@@ -144,13 +180,15 @@ def _touch_last_login(access_token: str, user_id: str) -> None:
     """Update ``profiles.last_login`` for ``user_id`` via a short-lived client.
 
     Builds a fresh, uncached client (``create_client`` imported directly —
-    never the shared ``get_supabase_client()`` ``cache_resource`` instance)
-    and attaches the just-authenticated user's JWT to it for this call only,
-    so the write is scoped to this one request under RLS
-    (``auth.uid() = user_id``) and the shared client stays exactly as
-    stateless as ``src/data/supabase_client.py`` requires. The fresh client
-    goes out of scope immediately after — it is never stored in
-    ``st.session_state`` or any cached/global object.
+    never the shared ``get_supabase_client()`` ``cache_resource`` instance —
+    same as :func:`_scoped_client`, kept as a direct call here since it also
+    needs ``.postgrest.auth()``, not just ``.auth``) and attaches the
+    just-authenticated user's JWT to it for this call only, so the write is
+    scoped to this one request under RLS (``auth.uid() = user_id``) and the
+    shared client stays exactly as stateless as
+    ``src/data/supabase_client.py`` requires. The fresh client goes out of
+    scope immediately after — it is never stored in ``st.session_state`` or
+    any cached/global object.
     """
     scoped_client = create_client(get_config("SUPABASE_URL"), get_config("SUPABASE_ANON_KEY"))
     scoped_client.postgrest.auth(access_token)
