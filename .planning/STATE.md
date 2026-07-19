@@ -4,16 +4,16 @@ milestone: v1.0
 milestone_name: milestone
 current_phase: 01
 current_phase_name: foundation-data-layer-caching-auth
-status: executing
-stopped_at: Completed 01-04-PLAN.md
-last_updated: "2026-07-18T23:47:19.084Z"
+status: verifying
+stopped_at: Completed 01-05-PLAN.md (phase 01 complete, ready for verification)
+last_updated: "2026-07-19T00:17:48.148Z"
 last_activity: 2026-07-18
 last_activity_desc: Phase 01 execution started
 progress:
   total_phases: 1
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 5
-  completed_plans: 4
+  completed_plans: 5
 ---
 
 # Project State
@@ -29,10 +29,10 @@ See: .planning/PROJECT.md (updated 2026-07-14)
 
 Phase: 01 (foundation-data-layer-caching-auth) — EXECUTING
 Plan: 5 of 5
-Status: Ready to execute
+Status: Phase complete — ready for verification
 Last activity: 2026-07-18 — Phase 01 execution started
 
-Progress: [████████░░] 80%
+Progress: [██████████] 100%
 
 ## Performance Metrics
 
@@ -62,6 +62,7 @@ Progress: [████████░░] 80%
 | Phase 01 P02 | 30min | 2 tasks | 5 files |
 | Phase 01 P03 | 15min | 2 tasks | 3 files |
 | Phase 01 P04 | 105min | 2 tasks | 3 files |
+| Phase 01 P05 | 40min | 2 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -79,6 +80,9 @@ Recent decisions affecting current work:
 - [Phase ?]: Cache chokepoint (src/data/cache.py) uses tenacity reraise=True so a total live-fetch failure with no disk cache propagates the original exception type rather than tenacity's RetryError wrapper
 - [Phase ?]: UI-SPEC's assumption that native Streamlit form validation blocks empty-field submission does not hold in practice - added explicit guard-clause + warning copy + red-border highlighting in 01-04 to deliver the intended empty-state behavior
 - [Phase ?]: streamlit run src/app.py requires a repo-root sys.path insertion since Streamlit sets sys.path[0] to the script's own directory, not the project root
+- [Phase ?]: Critical fix (T-01-01): every authenticating Supabase Auth call (sign_up, sign_in, magic-link, refresh_session) must route through a short-lived scoped client, never the shared cache_resource get_supabase_client() -- GoTrue's authenticating methods internally persist a session onto whichever client invokes them
+- [Phase ?]: sign_out() uses the stateless admin.sign_out(access_token, scope) call with an explicit token, not the stateful auth.sign_out() wrapper which depends on get_session() finding a token on the calling client
+- [Phase ?]: test_auth_isolation.py verified as a real (not trivially-passing) proof by temporarily reverting the session.py fix and confirming both isolation tests fail against the pre-fix code
 
 ### Pending Todos
 
@@ -103,6 +107,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-07-18T23:47:19.066Z
-Stopped at: Completed 01-04-PLAN.md
+Last session: 2026-07-19T00:17:48.129Z
+Stopped at: Completed 01-05-PLAN.md (phase 01 complete, ready for verification)
 Resume file: None
