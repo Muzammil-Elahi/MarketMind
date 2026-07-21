@@ -45,6 +45,7 @@ PAGE_SUBHEADING = (
 HOLDINGS_HEADING = "Existing Holdings"
 HOLDINGS_EMPTY_STATE = "No holdings added yet. Add a ticker below to get started."
 INVALID_TICKER_ERROR_TEMPLATE = 'We couldn\'t recognize "{ticker}" — check the symbol and try again.'
+MISSING_QUANTITY_ERROR_TEMPLATE = 'Quantity is required for "{ticker}".'
 SAVE_FAILURE_ERROR = "We couldn't save your profile. Please try again."
 SAVE_SUCCESS_MESSAGE = "Profile saved."
 SAVE_BUTTON_LABEL = "Save Profile"
@@ -186,7 +187,13 @@ def render_profile_page() -> None:
 
     # Skip any row with a blank ticker (an unfilled newly-added row) before
     # validating -- an empty row is not a submission attempt, not an error.
+    # A row that DOES have a ticker but a blank quantity, however, is a real
+    # validation failure -- `holdings.quantity` is `not null` in the DB, so a
+    # row like that must never reach `upsert_holdings` (CR-01: previously
+    # this reached the DB layer, where `delete()` had already removed the
+    # user's existing holdings before the subsequent `insert()` raised).
     holdings_rows = []
+    missing_quantity_tickers = []
     for _, row in edited_holdings.iterrows():
         ticker_value = row.get("ticker")
         if pd.isna(ticker_value):
@@ -195,12 +202,20 @@ def render_profile_page() -> None:
         if not ticker:
             continue
         quantity_value = row.get("quantity")
-        quantity_value = None if pd.isna(quantity_value) else quantity_value
+        if pd.isna(quantity_value):
+            missing_quantity_tickers.append(ticker)
+            continue
         cost_basis_value = row.get("cost_basis")
         cost_basis_value = None if pd.isna(cost_basis_value) else cost_basis_value
         holdings_rows.append(
             {"ticker": ticker, "quantity": quantity_value, "cost_basis": cost_basis_value}
         )
+
+    if missing_quantity_tickers:
+        for ticker in missing_quantity_tickers:
+            st.error(MISSING_QUANTITY_ERROR_TEMPLATE.format(ticker=ticker))
+        _highlight_holdings_editor()
+        return
 
     invalid_tickers = [row["ticker"] for row in holdings_rows if not validate_ticker(row["ticker"])]
 

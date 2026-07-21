@@ -128,20 +128,35 @@ def upsert_holdings(access_token: str, user_id: str, rows: list[dict]) -> None:
     caller-supplied row containing an unexpected extra key (for example a
     different ``user_id`` value) can never override the server-supplied
     ownership value (T-02-04).
+
+    CR-01: every payload is built AND validated against known
+    ``not null`` DB constraints (``quantity``) *before* the ``delete()`` is
+    issued. The caller (``src/pages/profile.py``) already guards against a
+    blank ``quantity`` reaching this function, but this module is the CRUD
+    chokepoint -- validating here too means a future caller can never
+    reintroduce the delete-then-crash-with-no-rollback failure mode by
+    skipping that UI-level check.
     """
+    payloads = [
+        {
+            "user_id": user_id,
+            "ticker": row["ticker"],
+            "quantity": row["quantity"],
+            "cost_basis": row.get("cost_basis"),
+        }
+        for row in rows
+    ]
+    for payload in payloads:
+        if payload["quantity"] is None:
+            raise ValueError(
+                f'quantity is required for ticker "{payload["ticker"]}"; '
+                "refusing to replace holdings with an invalid row"
+            )
+
     scoped_client = create_client(get_config("SUPABASE_URL"), get_config("SUPABASE_ANON_KEY"))
     scoped_client.postgrest.auth(access_token)
     scoped_client.table("holdings").delete().eq("user_id", user_id).execute()
-    if rows:
-        payloads = [
-            {
-                "user_id": user_id,
-                "ticker": row["ticker"],
-                "quantity": row["quantity"],
-                "cost_basis": row.get("cost_basis"),
-            }
-            for row in rows
-        ]
+    if payloads:
         scoped_client.table("holdings").insert(payloads).execute()
 
 
