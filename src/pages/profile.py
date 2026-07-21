@@ -110,35 +110,45 @@ def render_profile_page() -> None:
     st.write(PAGE_SUBHEADING)
 
     with st.form("profile_form"):
+        # WR-01: every scalar widget below is keyed and seeds its initial
+        # value into st.session_state only once (the first time this key is
+        # ever seen). This makes each field's persisted value survive a
+        # rerun that returns early due to a validation error elsewhere on
+        # the page (e.g. an invalid ticker or missing quantity in the
+        # holdings grid) -- matching st.data_editor's already-keyed
+        # ("holdings_editor") behavior instead of resetting from the
+        # DB-fetched `profile` dict every time.
         risk_tolerance = profile.get("risk_tolerance")
-        risk_tolerance_index = (
-            RISK_TOLERANCE_OPTIONS.index(risk_tolerance)
-            if risk_tolerance in RISK_TOLERANCE_OPTIONS
-            else None
-        )
+        if "profile_risk_tolerance" not in st.session_state:
+            st.session_state["profile_risk_tolerance"] = (
+                risk_tolerance if risk_tolerance in RISK_TOLERANCE_OPTIONS else None
+            )
         risk_tolerance_value = st.selectbox(
-            "Risk Tolerance", RISK_TOLERANCE_OPTIONS, index=risk_tolerance_index
+            "Risk Tolerance", RISK_TOLERANCE_OPTIONS, key="profile_risk_tolerance"
         )
 
         time_horizon = profile.get("time_horizon")
-        time_horizon_index = (
-            TIME_HORIZON_OPTIONS.index(time_horizon)
-            if time_horizon in TIME_HORIZON_OPTIONS
-            else None
-        )
+        if "profile_time_horizon" not in st.session_state:
+            st.session_state["profile_time_horizon"] = (
+                time_horizon if time_horizon in TIME_HORIZON_OPTIONS else None
+            )
         time_horizon_value = st.selectbox(
-            "Time Horizon", TIME_HORIZON_OPTIONS, index=time_horizon_index
+            "Time Horizon", TIME_HORIZON_OPTIONS, key="profile_time_horizon"
         )
 
+        if "profile_preferred_sectors" not in st.session_state:
+            st.session_state["profile_preferred_sectors"] = profile.get("preferred_sectors") or []
         preferred_sectors_value = st.multiselect(
             "Preferred Sectors",
             options=SECTORS,
-            default=profile.get("preferred_sectors") or [],
+            key="profile_preferred_sectors",
         )
+        if "profile_excluded_sectors" not in st.session_state:
+            st.session_state["profile_excluded_sectors"] = profile.get("excluded_sectors") or []
         excluded_sectors_value = st.multiselect(
             "Excluded Sectors",
             options=SECTORS,
-            default=profile.get("excluded_sectors") or [],
+            key="profile_excluded_sectors",
         )
 
         st.write("Preferred Asset Types")
@@ -147,13 +157,16 @@ def render_profile_page() -> None:
         asset_type_columns = st.columns(len(ASSET_TYPE_OPTIONS))
         for column, asset_type in zip(asset_type_columns, ASSET_TYPE_OPTIONS):
             with column:
+                asset_type_key = f"profile_asset_type_{asset_type}"
+                if asset_type_key not in st.session_state:
+                    st.session_state[asset_type_key] = asset_type in existing_asset_types
                 asset_type_checkbox_values[asset_type] = st.checkbox(
-                    asset_type, value=asset_type in existing_asset_types
+                    asset_type, key=asset_type_key
                 )
 
-        capital_value = st.number_input(
-            "Capital", min_value=0.0, value=float(profile.get("capital") or 0.0)
-        )
+        if "profile_capital" not in st.session_state:
+            st.session_state["profile_capital"] = float(profile.get("capital") or 0.0)
+        capital_value = st.number_input("Capital", min_value=0.0, key="profile_capital")
 
         st.subheader(HOLDINGS_HEADING)
         if not existing_holdings:
