@@ -68,12 +68,12 @@ Plans:
   3. The feature engineering module computes technical/factor features using only point-in-time data; an automated leakage smoke test fails if any feature is built using future information.
   4. The same feature-computation functions serve both the (future) backtest harness and live inference without duplicated logic.
 
-**Plans**: 1/4 plans executed
+**Plans**: 2/4 plans executed
 Plans:
 **Wave 1**
 
 - [x] 02-01-PLAN.md — Migration: extend profiles (6 nullable columns) + create holdings table (RLS + GRANTs)
-- [ ] 02-02-PLAN.md — Feature engineering pipeline (technical.py/feature_frame.py) + leakage smoke test + pandas-ta-classic install
+- [x] 02-02-PLAN.md — Feature engineering pipeline (technical.py/feature_frame.py) + leakage smoke test + pandas-ta-classic install
 
 **Wave 2** *(blocked on 02-01 completion)*
 
