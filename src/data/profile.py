@@ -31,8 +31,8 @@ genuine network/API exception is treated as inconclusive and fails open
 (returns ``True``), since a transient data-layer failure is not evidence
 the ticker symbol itself is wrong.
 
-No function in this module is wrapped in ``@st.cache_data``/
-``@st.cache_resource`` (D-13 -- profile reads are always fetched fresh).
+No function in this module is wrapped in a Streamlit caching decorator
+(D-13 -- profile reads are always fetched fresh).
 """
 
 from supabase import create_client
@@ -77,7 +77,7 @@ def upsert_profile(
 ) -> None:
     """Save the six investor-profile scalar fields for ``user_id``.
 
-    Always an ``UPDATE`` -- never ``.upsert()``/``.insert()`` -- since
+    Always an ``UPDATE`` -- never an upsert or insert call -- since
     ``public.profiles`` has no client-facing INSERT policy; the row always
     already exists by the time this is called. Named keyword arguments make
     mass-assignment structurally impossible here: the payload is built from
