@@ -2,18 +2,18 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-current_phase: 2
-current_phase_name: Investor Profile + Feature Engineering Foundation
+current_phase: 02
+current_phase_name: investor-profile-feature-engineering-foundation
 status: executing
-stopped_at: Phase 2 UI-SPEC approved
-last_updated: "2026-07-19T03:49:40.139Z"
-last_activity: 2026-07-18
-last_activity_desc: Phase 01 complete, transitioned to Phase 2
+stopped_at: Completed 02-01-PLAN.md
+last_updated: "2026-07-21T00:53:58.566Z"
+last_activity: 2026-07-20
+last_activity_desc: Phase 02 execution started
 progress:
   total_phases: 2
   completed_phases: 1
-  total_plans: 5
-  completed_plans: 5
+  total_plans: 9
+  completed_plans: 6
 ---
 
 # Project State
@@ -23,16 +23,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-07-14)
 
 **Core value:** A user gets a ranked, explainable shortlist of assets matching their investor profile, and can drill into any of them to see a price forecast with confidence intervals and backtested accuracy — recommendation and prediction work together as one pipeline, not two disconnected tools.
-**Current focus:** Phase 01 — foundation-data-layer-caching-auth
+**Current focus:** Phase 02 — investor-profile-feature-engineering-foundation
 
 ## Current Position
 
-Phase: 2 — Investor Profile + Feature Engineering Foundation
-Plan: Not started
+Phase: 02 (investor-profile-feature-engineering-foundation) — EXECUTING
+Plan: 2 of 4
 Status: Ready to execute
-Last activity: 2026-07-18 — Phase 01 complete, transitioned to Phase 2
+Last activity: 2026-07-20 — Phase 02 execution started
 
-Progress: [██████████] 100%
+Progress: [███████░░░] 67%
 
 ## Performance Metrics
 
@@ -63,6 +63,7 @@ Progress: [██████████] 100%
 | Phase 01 P03 | 15min | 2 tasks | 3 files |
 | Phase 01 P04 | 105min | 2 tasks | 3 files |
 | Phase 01 P05 | 40min | 2 tasks | 7 files |
+| Phase 02 P01 | 15 | 2 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -83,6 +84,7 @@ Recent decisions affecting current work:
 - [Phase ?]: Critical fix (T-01-01): every authenticating Supabase Auth call (sign_up, sign_in, magic-link, refresh_session) must route through a short-lived scoped client, never the shared cache_resource get_supabase_client() -- GoTrue's authenticating methods internally persist a session onto whichever client invokes them
 - [Phase ?]: sign_out() uses the stateless admin.sign_out(access_token, scope) call with an explicit token, not the stateful auth.sign_out() wrapper which depends on get_session() finding a token on the calling client
 - [Phase ?]: test_auth_isolation.py verified as a real (not trivially-passing) proof by temporarily reverting the session.py fix and confirming both isolation tests fail against the pre-fix code
+- [Phase ?]: Owner-scoped holdings child table (own user_id FK) with 4 RLS policies + GRANTs folded into a single migration, matching RESEARCH.md Pattern 1/2
 
 ### Pending Todos
 
@@ -107,6 +109,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-07-19T01:38:26.361Z
-Stopped at: Phase 2 UI-SPEC approved
-Resume file: .planning/phases/02-investor-profile-feature-engineering-foundation/02-UI-SPEC.md
+Last session: 2026-07-21T00:53:58.544Z
+Stopped at: Completed 02-01-PLAN.md
+Resume file: None

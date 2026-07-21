@@ -107,3 +107,9 @@ Live, RLS-enforced, GRANT-correct schema for both `profiles` (extended) and `hol
 ---
 *Phase: 02-investor-profile-feature-engineering-foundation*
 *Completed: 2026-07-21*
+
+## Self-Check: PASSED
+
+- FOUND: supabase/migrations/20260721005033_extend_profiles_and_create_holdings.sql
+- FOUND: commit 7545f3d
+- FOUND: commit d425857

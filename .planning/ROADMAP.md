@@ -68,11 +68,11 @@ Plans:
   3. The feature engineering module computes technical/factor features using only point-in-time data; an automated leakage smoke test fails if any feature is built using future information.
   4. The same feature-computation functions serve both the (future) backtest harness and live inference without duplicated logic.
 
-**Plans**: 4 plans
+**Plans**: 1/4 plans executed
 Plans:
 **Wave 1**
 
-- [ ] 02-01-PLAN.md — Migration: extend profiles (6 nullable columns) + create holdings table (RLS + GRANTs)
+- [x] 02-01-PLAN.md — Migration: extend profiles (6 nullable columns) + create holdings table (RLS + GRANTs)
 - [ ] 02-02-PLAN.md — Feature engineering pipeline (technical.py/feature_frame.py) + leakage smoke test + pandas-ta-classic install
 
 **Wave 2** *(blocked on 02-01 completion)*
@@ -152,7 +152,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation — Data Layer, Caching & Auth | 5/5 | Complete    | 2026-07-18 |
-| 2. Investor Profile + Feature Engineering Foundation | 0/4 | Not started | - |
+| 2. Investor Profile + Feature Engineering Foundation | 1/4 | In Progress|  |
 | 3. Deterministic Recommendation Engine | 0/TBD | Not started | - |
 | 4. Multi-Model Prediction + Walk-Forward Backtesting | 0/TBD | Not started | - |
 | 5. LLM Agent Layer (Rerank + Explain) | 0/TBD | Not started | - |

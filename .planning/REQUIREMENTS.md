@@ -9,7 +9,7 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Profile
 
-- [ ] **PROFILE-01**: User can build an investor profile (risk tolerance, time horizon, preferred/excluded sectors, preferred asset types, capital, existing holdings)
+- [x] **PROFILE-01**: User can build an investor profile (risk tolerance, time horizon, preferred/excluded sectors, preferred asset types, capital, existing holdings)
 - [ ] **PROFILE-02**: User can edit their profile after creation and see recommendations update accordingly
 
 ### Authentication & Persistence
@@ -84,7 +84,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| PROFILE-01 | Phase 2 | Pending |
+| PROFILE-01 | Phase 2 | Complete |
 | PROFILE-02 | Phase 2 | Pending |
 | AUTH-01 | Phase 1 | Complete |
 | AUTH-02 | Phase 1 | Complete |
