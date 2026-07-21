@@ -35,17 +35,38 @@ def test_truncation_invariance_no_future_data_changes_past_features():
 
 
 def test_synthetic_future_signal_never_appears_before_its_source_date():
-    """A column deterministically derived from a *future* close price must
-    not leak into any feature value dated before that future date."""
+    """Perturbing the raw ``Close`` price at a single *future* date must not
+    change any feature value computed for a date before that future date.
+
+    WR-03: the previous version of this test only asserted that a
+    synthetic ``"cheat_future_close"`` column never appears in
+    ``features.columns`` -- which is unconditionally true for *any*
+    implementation of ``assemble_feature_frame`` (it always returns a fresh
+    frame with exactly the four known feature columns and never passes
+    through arbitrary input columns), so the check could never fail
+    regardless of whether leakage existed. This version instead actually
+    exercises the computation path: it perturbs a real future ``Close``
+    value the four ``technical.*`` functions all read from, and asserts
+    every feature value dated before that perturbation is byte-for-byte
+    unchanged -- a genuine second, independent angle on D-11 alongside
+    ``test_truncation_invariance_no_future_data_changes_past_features``
+    above (that test compares frames of different *lengths*; this one
+    compares frames of the *same* length with one future value changed).
+    """
     df = _sample_ohlcv(100)
     future_date = df.index[80]
-    # "cheat" signal: literally the future close price, injected as if it
-    # were available from day 1 -- a bug would leak this into early rows'
-    # features (e.g. via an unguarded merge/join or center=True rolling).
-    df["cheat_future_close"] = df.loc[future_date, "Close"]
 
-    features = assemble_feature_frame(df)
+    baseline_features = assemble_feature_frame(df)
 
-    assert "cheat_future_close" not in features.columns.tolist() or (
-        features.loc[: df.index[79], "cheat_future_close"].isna().all()
+    perturbed_df = df.copy()
+    # An extreme, unmistakable perturbation -- if any rolling/indicator
+    # computation ever pulled this future value into an earlier row (e.g.
+    # via an unguarded merge/join or a centered rolling window), the
+    # assertion below would catch it.
+    perturbed_df.loc[future_date, "Close"] *= 1000
+    perturbed_features = assemble_feature_frame(perturbed_df)
+
+    pd.testing.assert_frame_equal(
+        baseline_features.loc[: df.index[79]],
+        perturbed_features.loc[: df.index[79]],
     )
