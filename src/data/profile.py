@@ -41,6 +41,26 @@ from src.config import get_config
 from src.data.prices import fetch_ohlcv
 
 
+def _scoped_client(access_token: str):
+    """Build a fresh anon-key Supabase client scoped to one caller's access
+    token (WR-02).
+
+    This is the *only* thing that makes a request RLS-enforced as the
+    signed-in caller rather than an anonymous client -- every function
+    below must go through this helper rather than repeating
+    ``create_client(...)`` + ``.postgrest.auth(access_token)`` inline, so a
+    future function added to this module can never accidentally omit the
+    ``.postgrest.auth(access_token)`` call and silently fall back to
+    unscoped anon-key access. Mirrors ``tests/test_holdings_rls.py``'s own
+    ``_scoped_client`` helper. The returned client goes out of scope
+    immediately after its single call; it is never stored in
+    ``st.session_state`` or any cached/global object.
+    """
+    client = create_client(get_config("SUPABASE_URL"), get_config("SUPABASE_ANON_KEY"))
+    client.postgrest.auth(access_token)
+    return client
+
+
 def fetch_profile(access_token: str, user_id: str) -> dict | None:
     """Fetch the ``profiles`` scalar fields for ``user_id``.
 
@@ -50,8 +70,7 @@ def fetch_profile(access_token: str, user_id: str) -> dict | None:
     if called with a mismatched token/user_id pair). Not cached -- always
     fetches fresh from Supabase (D-13).
     """
-    scoped_client = create_client(get_config("SUPABASE_URL"), get_config("SUPABASE_ANON_KEY"))
-    scoped_client.postgrest.auth(access_token)
+    scoped_client = _scoped_client(access_token)
     result = (
         scoped_client.table("profiles")
         .select(
@@ -96,15 +115,13 @@ def upsert_profile(
         "preferred_asset_types": preferred_asset_types,
         "capital": capital,
     }
-    scoped_client = create_client(get_config("SUPABASE_URL"), get_config("SUPABASE_ANON_KEY"))
-    scoped_client.postgrest.auth(access_token)
+    scoped_client = _scoped_client(access_token)
     scoped_client.table("profiles").update(payload).eq("user_id", user_id).execute()
 
 
 def fetch_holdings(access_token: str, user_id: str) -> list[dict]:
     """Fetch all ``holdings`` rows owned by ``user_id``, oldest first."""
-    scoped_client = create_client(get_config("SUPABASE_URL"), get_config("SUPABASE_ANON_KEY"))
-    scoped_client.postgrest.auth(access_token)
+    scoped_client = _scoped_client(access_token)
     result = (
         scoped_client.table("holdings")
         .select("id, ticker, quantity, cost_basis")
@@ -153,8 +170,7 @@ def upsert_holdings(access_token: str, user_id: str, rows: list[dict]) -> None:
                 "refusing to replace holdings with an invalid row"
             )
 
-    scoped_client = create_client(get_config("SUPABASE_URL"), get_config("SUPABASE_ANON_KEY"))
-    scoped_client.postgrest.auth(access_token)
+    scoped_client = _scoped_client(access_token)
     scoped_client.table("holdings").delete().eq("user_id", user_id).execute()
     if payloads:
         scoped_client.table("holdings").insert(payloads).execute()
