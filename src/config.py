@@ -1,4 +1,4 @@
-"""Shared configuration access for Popcorn Pilot.
+"""Shared configuration access for MarketMind.
 
 Resolution order for any config key:
 1. ``st.secrets`` — populated on Streamlit Community Cloud (or locally via

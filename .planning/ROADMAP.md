@@ -1,8 +1,8 @@
-# Roadmap: Popcorn Pilot
+# Roadmap: MarketMind
 
 ## Overview
 
-Popcorn Pilot is built as a layered pipeline, not a set of independent features: a cache-first data/auth foundation, then a leakage-safe feature pipeline feeding a fully deterministic recommendation engine, then a multi-model prediction layer with honest walk-forward backtesting, then an LLM agent that reads (but never computes) on top of both, and finally a compliance audit and watchlist pass that closes the loop before launch. Each phase's correctness is a precondition for the one after it — most critically, the recommendation and prediction engines must be complete, deterministic, and testable with zero LLM dependency before the Gemini/LangGraph agent layer is built on top of them.
+MarketMind is built as a layered pipeline, not a set of independent features: a cache-first data/auth foundation, then a leakage-safe feature pipeline feeding a fully deterministic recommendation engine, then a multi-model prediction layer with honest walk-forward backtesting, then an LLM agent that reads (but never computes) on top of both, and finally a compliance audit and watchlist pass that closes the loop before launch. Each phase's correctness is a precondition for the one after it — most critically, the recommendation and prediction engines must be complete, deterministic, and testable with zero LLM dependency before the Gemini/LangGraph agent layer is built on top of them.
 
 ## Phases
 

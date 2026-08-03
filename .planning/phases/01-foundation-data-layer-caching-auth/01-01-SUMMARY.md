@@ -76,7 +76,7 @@ coverage:
     requirement: "AUTH-03"
     verification:
       - kind: integration
-        ref: "npx supabase status -o env (API_URL/ANON_KEY/DB_URL/INBUCKET_URL present); docker exec supabase_db_Popcorn-Pilot psql -c \"select relrowsecurity from pg_class where relname='profiles'\" -> t; psql -c \"select policyname,cmd from pg_policies where tablename='profiles'\" -> 2 rows"
+        ref: "npx supabase status -o env (API_URL/ANON_KEY/DB_URL/INBUCKET_URL present); docker exec supabase_db_MarketMind psql -c \"select relrowsecurity from pg_class where relname='profiles'\" -> t; psql -c \"select policyname,cmd from pg_policies where tablename='profiles'\" -> 2 rows"
         status: pass
     human_judgment: false
 

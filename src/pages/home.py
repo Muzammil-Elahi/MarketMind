@@ -17,7 +17,7 @@ def render_home_page() -> None:
 
     st.title("You're in")
     st.write(
-        "This is your home base for Popcorn Pilot. Your investor profile and "
+        "This is your home base for MarketMind. Your investor profile and "
         "recommendations are coming in a future update — check back soon."
     )
 

@@ -1,4 +1,4 @@
-# Requirements: Popcorn Pilot
+# Requirements: MarketMind
 
 **Defined:** 2026-07-14
 **Core Value:** A user gets a ranked, explainable shortlist of assets matching their investor profile, and can drill into any of them to see a price forecast with confidence intervals and backtested accuracy — recommendation and prediction work together as one pipeline, not two disconnected tools.

@@ -1,4 +1,4 @@
-"""Shared pytest fixtures for Popcorn Pilot's test suite.
+"""Shared pytest fixtures for MarketMind's test suite.
 
 `supabase_env` shells out to `npx supabase status -o env` to discover the
 running local Supabase CLI stack's connection details (API_URL, ANON_KEY,

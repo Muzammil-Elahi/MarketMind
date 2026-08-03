@@ -1,13 +1,13 @@
 # Project Research Summary
 
-**Project:** Popcorn Pilot
+**Project:** MarketMind
 **Domain:** Free-tier quant recommendation + price-prediction platform (Streamlit, multi-asset: equities/ETFs/crypto/gold/forex, LLM reranking agent)
 **Researched:** 2026-07-14
 **Confidence:** MEDIUM
 
 ## Executive Summary
 
-Popcorn Pilot is a multi-user, multi-asset (stocks/ETFs/crypto/gold/forex) research and price-prediction tool that experts in this space build as a **layered, single-process pipeline**: a deterministic data -> feature -> model -> recommendation pipeline, with an LLM agent bolted on top strictly to explain and rerank -- never to score. The industry pattern across competitors (Zacks, TipRanks, Simply Wall St, Tickeron) splits into "research/scoring tools" and "prediction tools"; Popcorn Pilot's differentiator is unifying both into one profile-driven flow with multi-model forecasts (SMA, XGBoost, Prophet), transparent per-model backtested accuracy, and a Gemini/LangGraph agent that explains the deterministic score in plain English and answers follow-ups -- addressing the #1 documented fintech-AI trust failure (black-box reasoning).
+MarketMind is a multi-user, multi-asset (stocks/ETFs/crypto/gold/forex) research and price-prediction tool that experts in this space build as a **layered, single-process pipeline**: a deterministic data -> feature -> model -> recommendation pipeline, with an LLM agent bolted on top strictly to explain and rerank -- never to score. The industry pattern across competitors (Zacks, TipRanks, Simply Wall St, Tickeron) splits into "research/scoring tools" and "prediction tools"; MarketMind's differentiator is unifying both into one profile-driven flow with multi-model forecasts (SMA, XGBoost, Prophet), transparent per-model backtested accuracy, and a Gemini/LangGraph agent that explains the deterministic score in plain English and answers follow-ups -- addressing the #1 documented fintech-AI trust failure (black-box reasoning).
 
 The recommended approach: build on Streamlit 1.59.x + Python 3.11/3.12, yfinance for all asset classes, XGBoost/Prophet/statsmodels for forecasting, FinBERT (opt-in) for sentiment, google-genai + LangGraph for the agent layer, and Supabase for auth/persistence -- all chosen because they have real, if constrained, free tiers. Architecturally, everything lives in one Streamlit process organized into strict module boundaries (data/, features/, models/, recommendation/, agent/, pages/), with a single cache-first chokepoint for every external call and a hard rule that the recommendation engine is fully deterministic and testable without any LLM dependency.
 
@@ -30,7 +30,7 @@ The stack centers on Streamlit 1.59.x on Python 3.11/3.12 for the app/UI, with s
 
 ### Expected Features
 
-Competitor research across research-tools (Zacks/TipRanks/Simply Wall St/Morningstar), robo-advisors (Wealthfront/Betterment), and prediction tools (Tickeron/TrendSpider/AltIndex) shows the category splits cleanly, and Popcorn Pilot's value proposition is unifying them. Every table-stakes feature maps to an existing PROJECT.md requirement, so the risk isn't scope discovery but sequencing and depth (e.g., score transparency must be real factor breakdown, not decoration).
+Competitor research across research-tools (Zacks/TipRanks/Simply Wall St/Morningstar), robo-advisors (Wealthfront/Betterment), and prediction tools (Tickeron/TrendSpider/AltIndex) shows the category splits cleanly, and MarketMind's value proposition is unifying them. Every table-stakes feature maps to an existing PROJECT.md requirement, so the risk isn't scope discovery but sequencing and depth (e.g., score transparency must be real factor breakdown, not decoration).
 
 **Must have (table stakes):**
 - Investor profile / risk questionnaire feeding visible personalization

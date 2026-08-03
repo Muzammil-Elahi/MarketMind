@@ -77,7 +77,7 @@ def _highlight_empty_fields(*keys: str | None) -> None:
 
 def render_login_page() -> None:
     """Render the login/signup/magic-link page."""
-    st.title("Popcorn Pilot")
+    st.title("MarketMind")
 
     log_in_tab, create_account_tab, magic_link_tab = st.tabs(
         ["Log In", "Create Account", "Magic Link"]

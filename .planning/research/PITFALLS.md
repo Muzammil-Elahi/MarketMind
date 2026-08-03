@@ -324,5 +324,5 @@ LLM agent integration phase — build context-grounding and labeling as part of 
 - [Billing FAQ | Supabase Docs](https://supabase.com/docs/guides/platform/billing-faq)
 
 ---
-*Pitfalls research for: Quant recommendation & price-prediction platform (Popcorn Pilot)*
+*Pitfalls research for: Quant recommendation & price-prediction platform (MarketMind)*
 *Researched: 2026-07-14*

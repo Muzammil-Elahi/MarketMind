@@ -1,8 +1,8 @@
-# Popcorn Pilot
+# MarketMind
 
 ## What This Is
 
-Popcorn Pilot is a full-stack web app (Streamlit + Python) that helps everyday investors research assets across stocks, ETFs, crypto, gold, and forex. It combines a traditional hybrid recommendation engine (factor scoring + collaborative-filtering-style similarity) with an interactive price-prediction module, and layers an LLM agent on top that reranks/annotates recommendations with plain-English reasoning and answers follow-up questions. Built entirely on free-tier services and shared with multiple users via Supabase auth, hosted on Streamlit Community Cloud.
+MarketMind is a full-stack web app (Streamlit + Python) that helps everyday investors research assets across stocks, ETFs, crypto, gold, and forex. It combines a traditional hybrid recommendation engine (factor scoring + collaborative-filtering-style similarity) with an interactive price-prediction module, and layers an LLM agent on top that reranks/annotates recommendations with plain-English reasoning and answers follow-up questions. Built entirely on free-tier services and shared with multiple users via Supabase auth, hosted on Streamlit Community Cloud.
 
 ## Core Value
 
@@ -35,7 +35,7 @@ A user gets a ranked, explainable shortlist of assets matching their investor pr
 ## Context
 
 - Originating spec: a detailed build document (`quant_recommendation_system_spec.md`) laid out the full technical design — module structure, model interfaces, Streamlit page layouts, and a strict module-by-module build order. That spec is the primary implementation reference; this project charter scopes and sequences it.
-- The repo (`Popcorn-Pilot`) previously had a placeholder README describing a movie recommendation system — this is being replaced to reflect the actual financial platform.
+- The repo (`MarketMind`) previously had a placeholder README describing a movie recommendation system — this is being replaced to reflect the actual financial platform.
 - Motivation is dual: a genuinely useful personal investing research tool, and a portfolio piece demonstrating ML modeling, agentic LLM workflows, and full-stack build skills.
 - No lookahead bias and walk-forward-style validation are non-negotiable modeling constraints carried over from the source spec, even as the model set is trimmed for v1.
 - Free data sources: yfinance (prices, including forex pairs like EURUSD=X), NewsAPI/Alpha Vantage (news), FinBERT via HuggingFace transformers (sentiment) — all free tier.

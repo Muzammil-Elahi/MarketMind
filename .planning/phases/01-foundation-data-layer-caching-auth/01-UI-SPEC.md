@@ -59,7 +59,7 @@ Exceptions: icon-only nav/toggle controls (e.g., sidebar collapse, `st.Page` ico
 - **Label** — form field labels, `st.caption` helper text (e.g., "We'll never share your email"), disclaimer/stale-cache banner microcopy.
 - **Body** — form error/success messages, placeholder home page body copy.
 - **Heading** — section headers on the login page ("Log in" / "Create account" tab headers), placeholder home page heading.
-- **Display** — app title/wordmark on the login screen ("Popcorn Pilot").
+- **Display** — app title/wordmark on the login screen ("MarketMind").
 
 Exactly 2 weights declared (regular 400, semibold 600) — no bold/light variants introduced. This maps directly onto Streamlit's default `st.title`/`st.header`/`st.subheader`/body-text sizing without requiring custom font-weight CSS injection beyond what `.streamlit/config.toml`'s `baseFontSize` already controls.
 
@@ -87,7 +87,7 @@ Exactly 2 weights declared (regular 400, semibold 600) — no bold/light variant
 | Primary CTA (magic link) | "Send Magic Link" |
 | Secondary action (logout) | "Log Out" |
 | Empty state heading | "You're in" |
-| Empty state body | "This is your home base for Popcorn Pilot. Your investor profile and recommendations are coming in a future update — check back soon." |
+| Empty state body | "This is your home base for MarketMind. Your investor profile and recommendations are coming in a future update — check back soon." |
 | Error state (invalid credentials) | "We couldn't verify that email and password. Double-check them and try again." |
 | Error state (magic link send failure) | "We couldn't send your login link. Check your email address and try again." |
 | Error state (session expired) | "Your session expired — please log in again." |

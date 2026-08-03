@@ -24,7 +24,7 @@ Features users assume exist on any research/recommendation product in this categ
 
 ### Differentiators (Competitive Advantage)
 
-Features that set Popcorn Pilot apart from either pure-research tools (Simply Wall St, TipRanks) or pure-robo-advisors (Wealthfront) or pure-prediction tools (Tickeron). These should align with the Core Value: "recommendation and prediction work together as one pipeline."
+Features that set MarketMind apart from either pure-research tools (Simply Wall St, TipRanks) or pure-robo-advisors (Wealthfront) or pure-prediction tools (Tickeron). These should align with the Core Value: "recommendation and prediction work together as one pipeline."
 
 | Feature | Value Proposition | Complexity | Notes |
 |---------|-------------------|------------|-------|

@@ -40,7 +40,7 @@ coverage:
     requirement: "PROFILE-01"
     verification:
       - kind: integration
-        ref: "docker exec supabase_db_Popcorn-Pilot psql -tAc \"select count(*) from information_schema.columns where table_name='profiles' and column_name in ('risk_tolerance','time_horizon','preferred_sectors','excluded_sectors','preferred_asset_types','capital')\" -> 6"
+        ref: "docker exec supabase_db_MarketMind psql -tAc \"select count(*) from information_schema.columns where table_name='profiles' and column_name in ('risk_tolerance','time_horizon','preferred_sectors','excluded_sectors','preferred_asset_types','capital')\" -> 6"
         status: pass
     human_judgment: false
   - id: D2
@@ -48,7 +48,7 @@ coverage:
     requirement: "PROFILE-01"
     verification:
       - kind: integration
-        ref: "docker exec supabase_db_Popcorn-Pilot psql -tAc \"select count(*) from pg_policies where tablename='holdings'\" -> 4; relrowsecurity=true; role_table_grants confirms authenticated+service_role privileges"
+        ref: "docker exec supabase_db_MarketMind psql -tAc \"select count(*) from pg_policies where tablename='holdings'\" -> 4; relrowsecurity=true; role_table_grants confirms authenticated+service_role privileges"
         status: pass
     human_judgment: false
 

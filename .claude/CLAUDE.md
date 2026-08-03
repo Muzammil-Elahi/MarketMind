@@ -2,9 +2,9 @@
 
 ## Project
 
-**Popcorn Pilot**
+**MarketMind**
 
-Popcorn Pilot is a full-stack web app (Streamlit + Python) that helps everyday investors research assets across stocks, ETFs, crypto, gold, and forex. It combines a traditional hybrid recommendation engine (factor scoring + collaborative-filtering-style similarity) with an interactive price-prediction module, and layers an LLM agent on top that reranks/annotates recommendations with plain-English reasoning and answers follow-up questions. Built entirely on free-tier services and shared with multiple users via Supabase auth, hosted on Streamlit Community Cloud.
+MarketMind is a full-stack web app (Streamlit + Python) that helps everyday investors research assets across stocks, ETFs, crypto, gold, and forex. It combines a traditional hybrid recommendation engine (factor scoring + collaborative-filtering-style similarity) with an interactive price-prediction module, and layers an LLM agent on top that reranks/annotates recommendations with plain-English reasoning and answers follow-up questions. Built entirely on free-tier services and shared with multiple users via Supabase auth, hosted on Streamlit Community Cloud.
 
 **Core Value:** A user gets a ranked, explainable shortlist of assets matching their investor profile, and can drill into any of them to see a price forecast with confidence intervals and backtested accuracy — recommendation and prediction work together as one pipeline, not two disconnected tools.
 
