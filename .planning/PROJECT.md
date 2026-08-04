@@ -13,10 +13,10 @@ A user gets a ranked, explainable shortlist of assets matching their investor pr
 ### Validated
 
 - [x] Multiple users can sign up and log in (Supabase auth — email/password + magic link), with auth/session state strictly scoped per user — Validated in Phase 1: AUTH-01/AUTH-03 proven via 30 automated tests against a real local Supabase stack, including a real cross-user `cache_resource` session-leak vector (found and fixed during Phase 1, not merely assumed absent). Persisted profile/watchlist/history *data* (the rest of AUTH-02) remains scoped to Phase 2 (profile) and Phase 6 (watchlist/history) — Phase 1 validated the underlying persistence infrastructure (RLS-backed `profiles` table, cross-session read/write) those phases will build on.
+- [x] User can build an investor profile (risk tolerance, time horizon, sector preferences, capital, existing holdings) — Validated in Phase 2 (PROFILE-01/PROFILE-02): schema + RLS-backed `holdings` child table, mass-assignment-resistant CRUD chokepoint, and builder UI all proven by 58 automated tests plus a 4/4 human UAT pass (save/reload round-trip, no-stale-cache reload, and the two review-fix scenarios CR-01/WR-01). Feature-engineering module (point-in-time-safe technical/factor features) also shipped this phase as the data layer Phase 3's recommendation engine consumes.
 
 ### Active
 
-- [ ] User can build an investor profile (risk tolerance, time horizon, sector preferences, capital, existing holdings)
 - [ ] User can get a ranked list of recommended assets (stocks, ETFs, crypto, gold, forex) based on their profile, using a traditional hybrid model (factor + collaborative scoring)
 - [ ] User can drill into any asset and see price predictions from multiple models (starting with SMA baseline, XGBoost, Prophet) with confidence intervals
 - [ ] User can see backtested model accuracy (RMSE, directional accuracy, Sharpe) for each prediction
@@ -58,6 +58,8 @@ A user gets a ranked, explainable shortlist of assets matching their investor pr
 | Start with a smaller model set (SMA baseline + XGBoost + Prophet) instead of all 7 models from the source spec | Reduces v1 complexity/build time; LSTM/ARIMA/Linear Regression added once the core loop works | — Pending |
 | Multi-user with Supabase auth, hosted on Streamlit Community Cloud | Project is meant to be shared, not personal-only; both pieces fit the free-tier budget constraint | Validated in Phase 1 (auth/session-isolation infrastructure) |
 | Automated tests for Phase 1 run against a local Supabase CLI Docker stack, not mocks or a live cloud project | Lets AUTH-02/AUTH-03 exercise real Postgres RLS and real GoTrue auth flows at zero cost with no cloud account required; a live cloud project is only needed at actual deployment time | Proven in Phase 1 — 30 tests pass against the local stack; pattern available for any later phase needing real auth/DB test coverage |
+| Owner-scoped `holdings` child table (own `user_id` FK + 4 RLS policies + GRANTs), not a `jsonb` column on `profiles` | Lets holdings rows be queried/validated/RLS-checked individually rather than as an opaque blob | Proven in Phase 2 — 2-user cross-access proof (`test_holdings_rls.py`) shows RLS blocks cross-user select/insert/delete at the Postgres engine level |
+| `src/data/profile.py` CRUD functions build a fresh scoped Supabase client per call (mirroring `src/auth/session.py`'s pattern) instead of using the shared `cache_resource` client | Consistent with Phase 1's fix for the cache_resource cross-user session-leak vector — avoids reintroducing the same class of bug in the profile data layer | Validated in Phase 2 |
 
 ## Evolution
 
@@ -77,4 +79,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-07-18 after Phase 1 completion*
+*Last updated: 2026-08-03 after Phase 2 completion*
