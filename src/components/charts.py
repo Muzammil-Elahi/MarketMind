@@ -1,0 +1,53 @@
+"""Shared Plotly chart-building functions reused across pages/sizes.
+
+Per 03-UI-SPEC.md's "same rendering function reused ... not two
+independently-built components" requirement, `build_breakdown_figure` and
+`build_price_history_figure` are each a single, independently-testable
+function reused at both compact (recommendation card) and larger
+(drill-in/search) render sizes by `src/pages/recommendations.py` and
+`src/pages/search.py` (Plans 06/07).
+"""
+
+import pandas as pd
+import plotly.graph_objects as go
+import streamlit as st
+
+CHART_MARK_COLOR = "#334155"
+
+
+def build_breakdown_figure(sub_scores_display: dict) -> go.Figure:
+    """Return a horizontal bar chart of sub-factor scores.
+
+    Preserves the input dict's iteration order (never re-sorted by value)
+    so REC-02's fixed sub-factor display order (SUB_SCORE_ORDER from
+    explain.py) is respected.
+    """
+    bar = go.Bar(
+        x=list(sub_scores_display.values()),
+        y=list(sub_scores_display.keys()),
+        orientation="h",
+        marker_color=CHART_MARK_COLOR,
+    )
+    return go.Figure(data=[bar])
+
+
+def render_breakdown_bar_chart(sub_scores_display: dict, key: str) -> None:
+    """Render the sub-factor breakdown bar chart via st.plotly_chart."""
+    st.plotly_chart(build_breakdown_figure(sub_scores_display), key=key)
+
+
+def build_price_history_figure(price_df: pd.DataFrame) -> go.Figure:
+    """Return a single-line historical price chart from a DataFrame with
+    a "Close" column."""
+    scatter = go.Scatter(
+        x=price_df.index,
+        y=price_df["Close"],
+        mode="lines",
+        line_color=CHART_MARK_COLOR,
+    )
+    return go.Figure(data=[scatter])
+
+
+def render_price_history_chart(price_df: pd.DataFrame, key: str) -> None:
+    """Render the historical price line chart via st.plotly_chart."""
+    st.plotly_chart(build_price_history_figure(price_df), key=key)
