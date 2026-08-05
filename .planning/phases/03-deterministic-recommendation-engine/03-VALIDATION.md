@@ -1,9 +1,9 @@
 ---
 phase: 3
 slug: deterministic-recommendation-engine
-status: draft
-nyquist_compliant: false
-wave_0_complete: false
+status: validated
+nyquist_compliant: true
+wave_0_complete: true
 created: 2026-08-04
 ---
 
@@ -52,12 +52,14 @@ created: 2026-08-04
 
 ## Wave 0 Requirements
 
-- [ ] `tests/test_recommendation_engine.py` — stubs for REC-01, REC-02 (composite scoring, sub-score object shape, top-N-per-class grouping)
-- [ ] `tests/test_recommendation_factor_scoring.py` — stubs for REC-01 (within-class normalization correctness)
-- [ ] `tests/test_recommendation_similarity.py` — stubs for D-02 (cosine similarity correctness, cold-start non-issue framing)
-- [ ] `tests/test_recommendation_explain.py` — stubs for REC-03 (template traceability to displayed sub-scores)
-- [ ] `tests/test_recommendation_search.py` — stubs for REC-04/D-07/D-08 (mocked `fetch_ohlcv`, thin-history branch)
-- [ ] No new framework install needed — pytest already configured
+No separate Wave 0 plan — the planner (03-01 through 03-08-PLAN.md, verified by gsd-plan-checker with `## VERIFICATION PASSED`) creates each test file inline within the same TDD task that consumes it, rather than deferring stubs to an upfront wave:
+
+- [x] `tests/test_recommendation_engine.py` — REC-01, REC-02 (composite scoring, sub-score object shape, top-N-per-class grouping) — created in Plan 03-01/03-05
+- [x] `tests/test_recommendation_factor_scoring.py` — REC-01 (within-class normalization correctness) — created in Plan 03-01
+- [x] `tests/test_recommendation_similarity.py` — D-02 (cosine similarity correctness, cold-start non-issue framing) — created in Plan 03-04
+- [x] `tests/test_recommendation_explain.py` — REC-03 (template traceability to displayed sub-scores) — created in Plan 03-02
+- [x] `tests/test_recommendation_search.py` — REC-04/D-07/D-08 (mocked `fetch_ohlcv`, thin-history branch) — created in Plan 03-07
+- [x] No new framework install needed — pytest already configured
 
 ---
 
@@ -69,11 +71,11 @@ created: 2026-08-04
 
 ## Validation Sign-Off
 
-- [ ] All tasks have `<automated>` verify or Wave 0 dependencies
-- [ ] Sampling continuity: no 3 consecutive tasks without automated verify
-- [ ] Wave 0 covers all MISSING references
-- [ ] No watch-mode flags
-- [ ] Feedback latency < 30s
-- [ ] `nyquist_compliant: true` set in frontmatter
+- [x] All tasks have `<automated>` verify or Wave 0 dependencies
+- [x] Sampling continuity: no 3 consecutive tasks without automated verify
+- [x] Wave 0 covers all MISSING references (inline, per-task — no MISSING references remain)
+- [x] No watch-mode flags
+- [x] Feedback latency < 30s
+- [x] `nyquist_compliant: true` set in frontmatter
 
-**Approval:** pending
+**Approval:** approved (2026-08-04) — verified by gsd-plan-checker against 03-01 through 03-08-PLAN.md
