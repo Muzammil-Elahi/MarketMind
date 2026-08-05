@@ -97,12 +97,12 @@ Plans:
   3. Each recommendation includes a one-sentence plain-English reason.
   4. User can search for and view any asset from any supported asset class, including ones not currently in their recommended list.
 
-**Plans**: 1/8 plans executed
+**Plans**: 2/8 plans executed
 Plans:
 **Wave 1**
 
 - [x] 03-01-PLAN.md — Curated universe (D-04) + within-class factor scoring (D-03) + shared fetch/assemble/D-08-gate data loader
-- [ ] 03-02-PLAN.md — Profile-fit hard-exclude/rule engine (prohibition #3) + deterministic template explanation (D-06/REC-03)
+- [x] 03-02-PLAN.md — Profile-fit hard-exclude/rule engine (prohibition #3) + deterministic template explanation (D-06/REC-03)
 - [ ] 03-03-PLAN.md — numpy + plotly package-legitimacy checkpoints and install
 
 **Wave 2** *(blocked on 03-03 completion)*
@@ -177,7 +177,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 |-------|----------------|--------|-----------|
 | 1. Foundation — Data Layer, Caching & Auth | 5/5 | Complete    | 2026-07-18 |
 | 2. Investor Profile + Feature Engineering Foundation | 4/4 | Complete    | 2026-08-03 |
-| 3. Deterministic Recommendation Engine | 1/8 | In Progress|  |
+| 3. Deterministic Recommendation Engine | 2/8 | In Progress|  |
 | 4. Multi-Model Prediction + Walk-Forward Backtesting | 0/TBD | Not started | - |
 | 5. LLM Agent Layer (Rerank + Explain) | 0/TBD | Not started | - |
 | 6. Compliance, Watchlist & Launch Readiness | 0/TBD | Not started | - |

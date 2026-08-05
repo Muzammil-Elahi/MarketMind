@@ -5,15 +5,15 @@ milestone_name: milestone
 current_phase: 03
 current_phase_name: deterministic-recommendation-engine
 status: executing
-stopped_at: Completed 03-01-PLAN.md
-last_updated: "2026-08-05T01:27:40.777Z"
+stopped_at: Completed 03-02-PLAN.md
+last_updated: "2026-08-05T01:35:07.428Z"
 last_activity: 2026-08-04
 last_activity_desc: Phase 03 execution started
 progress:
   total_phases: 3
   completed_phases: 2
   total_plans: 17
-  completed_plans: 10
+  completed_plans: 11
 ---
 
 # Project State
@@ -28,11 +28,11 @@ See: .planning/PROJECT.md (updated 2026-08-03)
 ## Current Position
 
 Phase: 03 (deterministic-recommendation-engine) — EXECUTING
-Plan: 2 of 8
+Plan: 3 of 8
 Status: Ready to execute
 Last activity: 2026-08-04 — Phase 03 execution started
 
-Progress: [████████████████████] 9/9 plans ([██████░░░░] 59%) · 2/6 phases complete
+Progress: [████████████████████] 9/9 plans ([███████░░░] 65%) · 2/6 phases complete
 
 ## Performance Metrics
 
@@ -69,6 +69,7 @@ Progress: [████████████████████] 9/9 pla
 | Phase 02 P03 | 25min | 3 tasks | 4 files |
 | Phase 02 P04 | 8min | 2 tasks | 2 files |
 | Phase 03 P01 | 25min | 2 tasks | 7 files |
+| Phase 03 P02 | 15min | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -96,6 +97,8 @@ Recent decisions affecting current work:
 - [Phase ?]: [Phase 02, Plan 03] upsert_profile is UPDATE-only (never upsert/insert) since public.profiles has no client-facing INSERT policy; upsert_holdings whitelists ticker/quantity/cost_basis per row to resist mass-assignment (T-02-04), proven by a real spoofed-user_id attack test
 - [Phase ?]: [Phase 02, Plan 04] src/pages/profile.py's holdings invalid-ticker highlight is scoped to the whole st.data_editor widget (via its own key=), not per-row/per-cell, since st.data_editor exposes no finer-grained CSS hook -- a deliberate capability-driven adaptation of the UI-SPEC's per-row intent
 - [Phase ?]: [Phase 03, Plan 01] compute_quality_score copies universe_df before assigning its temporary _quality_raw column rather than mutating input in place, matching src/features/'s immutable-input discipline
+- [Phase ?]: [Phase 03, Plan 02] compute_profile_fit assumes is_excluded has already filtered the caller's asset row -- never re-implements the exclusion check itself, avoiding two independently-computed exclusion paths
+- [Phase ?]: [Phase 03, Plan 02] explain() tie-break uses sorted(sub_scores.items(), key=lambda kv: (-kv[1], SUB_SCORE_ORDER.index(kv[0]))) -- exact two-way ties get the two-factor template, all other cases (single winner or 3+ way tie) fall back to the one-factor template on the SUB_SCORE_ORDER-first factor
 
 ### Pending Todos
 
@@ -121,6 +124,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-08-05T01:27:40.766Z
-Stopped at: Completed 03-01-PLAN.md
-Resume file: .planning/phases/03-deterministic-recommendation-engine/03-02-PLAN.md
+Last session: 2026-08-05T01:35:07.409Z
+Stopped at: Completed 03-02-PLAN.md
+Resume file: None
