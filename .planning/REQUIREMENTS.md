@@ -20,10 +20,10 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Recommendation Engine
 
-- [ ] **REC-01**: User can get a ranked list of recommended assets spanning stocks, ETFs, crypto, gold, and forex, scored against their profile using a deterministic hybrid model (factor + collaborative-filtering-style scoring)
-- [ ] **REC-02**: Each ranked asset shows a composite score with a visible sub-factor breakdown (not an opaque single number)
+- [x] **REC-01**: User can get a ranked list of recommended assets spanning stocks, ETFs, crypto, gold, and forex, scored against their profile using a deterministic hybrid model (factor + collaborative-filtering-style scoring)
+- [x] **REC-02**: Each ranked asset shows a composite score with a visible sub-factor breakdown (not an opaque single number)
 - [ ] **REC-03**: Each recommendation includes a one-sentence plain-English reason
-- [ ] **REC-04**: User can search for any asset across all supported asset classes, not just ones already recommended
+- [x] **REC-04**: User can search for any asset across all supported asset classes, not just ones already recommended
 
 ### Price Prediction
 
@@ -89,10 +89,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | AUTH-01 | Phase 1 | Complete |
 | AUTH-02 | Phase 1 | Complete |
 | AUTH-03 | Phase 1 | Complete |
-| REC-01 | Phase 3 | Pending |
-| REC-02 | Phase 3 | Pending |
+| REC-01 | Phase 3 | Complete |
+| REC-02 | Phase 3 | Complete |
 | REC-03 | Phase 3 | Pending |
-| REC-04 | Phase 3 | Pending |
+| REC-04 | Phase 3 | Complete |
 | PRED-01 | Phase 4 | Pending |
 | PRED-02 | Phase 4 | Pending |
 | PRED-03 | Phase 4 | Pending |
