@@ -14,7 +14,7 @@ MarketMind is built as a layered pipeline, not a set of independent features: a 
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Foundation — Data Layer, Caching & Auth** - Cache-first market-data layer and Supabase auth/session foundation with strict per-user isolation (completed 2026-07-18)
-- [ ] **Phase 2: Investor Profile + Feature Engineering Foundation** - Profile builder UI plus a leakage-safe, point-in-time feature pipeline shared by later models
+- [x] **Phase 2: Investor Profile + Feature Engineering Foundation** - Profile builder UI plus a leakage-safe, point-in-time feature pipeline shared by later models (completed 2026-08-03)
 - [ ] **Phase 3: Deterministic Recommendation Engine** - Ranked, explainable, cross-asset-class shortlist from the hybrid factor + collaborative scorer, zero LLM dependency
 - [ ] **Phase 4: Multi-Model Prediction + Walk-Forward Backtesting** - Per-asset forecasts (SMA/XGBoost/Prophet) with confidence intervals and walk-forward-validated accuracy
 - [ ] **Phase 5: LLM Agent Layer (Rerank + Explain)** - Gemini/LangGraph agent reranks/annotates recommendations with a grounded plain-English thesis, read-only over the deterministic score
@@ -97,7 +97,31 @@ Plans:
   3. Each recommendation includes a one-sentence plain-English reason.
   4. User can search for and view any asset from any supported asset class, including ones not currently in their recommended list.
 
-**Plans**: TBD
+**Plans**: 8 plans
+Plans:
+**Wave 1**
+
+- [ ] 03-01-PLAN.md — Curated universe (D-04) + within-class factor scoring (D-03) + shared fetch/assemble/D-08-gate data loader
+- [ ] 03-02-PLAN.md — Profile-fit hard-exclude/rule engine (prohibition #3) + deterministic template explanation (D-06/REC-03)
+- [ ] 03-03-PLAN.md — numpy + plotly package-legitimacy checkpoints and install
+
+**Wave 2** *(blocked on 03-03 completion)*
+
+- [ ] 03-04-PLAN.md — Content-based similarity sub-score (D-02) + shared disclaimer banner + Plotly chart builders
+
+**Wave 3** *(blocked on 03-01/03-02/03-04 completion)*
+
+- [ ] 03-05-PLAN.md — Composite scoring engine: score_universe + build_recommendations (D-01/D-05)
+
+**Wave 4** *(blocked on 03-05 completion)*
+
+- [ ] 03-06-PLAN.md — Recommendations page (REC-01/REC-02/REC-03)
+- [ ] 03-07-PLAN.md — Search/drill-in page (REC-04, D-07/D-08)
+
+**Wave 5** *(blocked on 03-06/03-07 completion)*
+
+- [ ] 03-08-PLAN.md — App navigation registration + end-to-end human verification (checkpoint)
+
 **UI hint**: yes
 
 ### Phase 4: Multi-Model Prediction + Walk-Forward Backtesting
@@ -152,8 +176,8 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation — Data Layer, Caching & Auth | 5/5 | Complete    | 2026-07-18 |
-| 2. Investor Profile + Feature Engineering Foundation | 4/4 | In Progress|  |
-| 3. Deterministic Recommendation Engine | 0/TBD | Not started | - |
+| 2. Investor Profile + Feature Engineering Foundation | 4/4 | Complete    | 2026-08-03 |
+| 3. Deterministic Recommendation Engine | 0/8 | Not started | - |
 | 4. Multi-Model Prediction + Walk-Forward Backtesting | 0/TBD | Not started | - |
 | 5. LLM Agent Layer (Rerank + Explain) | 0/TBD | Not started | - |
 | 6. Compliance, Watchlist & Launch Readiness | 0/TBD | Not started | - |
