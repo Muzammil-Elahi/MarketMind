@@ -25,13 +25,26 @@ import streamlit as st  # noqa: E402
 from src.pages.home import render_home_page  # noqa: E402
 from src.pages.login import render_login_page  # noqa: E402
 from src.pages.profile import render_profile_page  # noqa: E402
+from src.pages.recommendations import render_recommendations_page  # noqa: E402
+from src.pages.search import render_search_page  # noqa: E402
 
 login_page = st.Page(render_login_page, title="Log In", url_path="login")
 home_page = st.Page(render_home_page, title="Home", url_path="home", default=True)
 profile_page = st.Page(render_profile_page, title="Investor Profile", url_path="profile")
+recommendations_page = st.Page(
+    render_recommendations_page, title="Recommendations", url_path="recommendations"
+)
+search_page = st.Page(render_search_page, title="Search", url_path="search")
 
 if st.session_state.get("logged_in"):
-    pg = st.navigation({"Home": [home_page], "Profile": [profile_page]})
+    pg = st.navigation(
+        {
+            "Home": [home_page],
+            "Profile": [profile_page],
+            "Recommendations": [recommendations_page],
+            "Search": [search_page],
+        }
+    )
 else:
     pg = st.navigation([login_page])
 
