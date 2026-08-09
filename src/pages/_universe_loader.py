@@ -12,9 +12,13 @@ outcome (the fetch succeeded but there isn't enough history to compute
 reliable features) so callers can render the correct distinct UI state.
 """
 
+import logging
+
 from src.data.prices import fetch_ohlcv
 from src.features.feature_frame import assemble_feature_frame
 from src.recommendation.universe import MIN_HISTORY_ROWS
+
+logger = logging.getLogger(__name__)
 
 
 def fetch_scorable_row(ticker: str, asset_class: str, sector: str | None) -> dict:
@@ -34,6 +38,7 @@ def fetch_scorable_row(ticker: str, asset_class: str, sector: str | None) -> dic
     try:
         df, _source = fetch_ohlcv(ticker)
     except Exception:
+        logger.exception("fetch_scorable_row failed for %s", ticker)
         return {"status": "not_found"}
 
     if df.empty:
