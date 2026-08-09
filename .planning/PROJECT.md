@@ -14,10 +14,10 @@ A user gets a ranked, explainable shortlist of assets matching their investor pr
 
 - [x] Multiple users can sign up and log in (Supabase auth — email/password + magic link), with auth/session state strictly scoped per user — Validated in Phase 1: AUTH-01/AUTH-03 proven via 30 automated tests against a real local Supabase stack, including a real cross-user `cache_resource` session-leak vector (found and fixed during Phase 1, not merely assumed absent). Persisted profile/watchlist/history *data* (the rest of AUTH-02) remains scoped to Phase 2 (profile) and Phase 6 (watchlist/history) — Phase 1 validated the underlying persistence infrastructure (RLS-backed `profiles` table, cross-session read/write) those phases will build on.
 - [x] User can build an investor profile (risk tolerance, time horizon, sector preferences, capital, existing holdings) — Validated in Phase 2 (PROFILE-01/PROFILE-02): schema + RLS-backed `holdings` child table, mass-assignment-resistant CRUD chokepoint, and builder UI all proven by 58 automated tests plus a 4/4 human UAT pass (save/reload round-trip, no-stale-cache reload, and the two review-fix scenarios CR-01/WR-01). Feature-engineering module (point-in-time-safe technical/factor features) also shipped this phase as the data layer Phase 3's recommendation engine consumes.
+- [x] User can get a ranked list of recommended assets (stocks, ETFs, crypto, gold, forex) based on their profile, using a traditional hybrid model (factor + collaborative scoring), with a visible sub-factor breakdown, a one-sentence plain-English reason per pick, and free-text search across the same scoring path — Validated in Phase 3 (REC-01/REC-02/REC-03/REC-04): deterministic factor/profile-fit/similarity scoring engine, Recommendations + Search pages, and app-nav wiring proven by 129 automated tests (75 recommendation-engine-specific) plus a code-review pass that found and fixed 2 critical bugs (literal "None" in explanation text when risk_tolerance unset; ETF tickers scored against the wrong peer universe) before verification passed.
 
 ### Active
 
-- [ ] User can get a ranked list of recommended assets (stocks, ETFs, crypto, gold, forex) based on their profile, using a traditional hybrid model (factor + collaborative scoring)
 - [ ] User can drill into any asset and see price predictions from multiple models (starting with SMA baseline, XGBoost, Prophet) with confidence intervals
 - [ ] User can see backtested model accuracy (RMSE, directional accuracy, Sharpe) for each prediction
 - [ ] User can optionally include news-sentiment scoring (FinBERT) in predictions
@@ -79,4 +79,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-08-03 after Phase 2 completion*
+*Last updated: 2026-08-09 after Phase 3 completion*
