@@ -120,6 +120,30 @@ def test_init_db_creates_missing_parent_directory(tmp_path, monkeypatch):
     assert nested_db_path.exists()
 
 
+def test_multiindex_columns_from_live_fetch_are_flattened():
+    """Regression test: yfinance can return a DataFrame with MultiIndex
+    columns (e.g. [("Close", "AAPL"), ("Open", "AAPL")]) even for a single
+    ticker. fetch_ohlcv() must flatten these to a plain pd.Index before
+    returning, otherwise downstream df["Close"] resolves to a 1-column
+    DataFrame instead of a Series and feature computation silently produces
+    all-NaN output."""
+    columns = pd.MultiIndex.from_tuples([("Close", "AAPL"), ("Open", "AAPL")])
+    multiindex_df = pd.DataFrame(
+        {
+            ("Close", "AAPL"): [100.0, 101.0, 102.0],
+            ("Open", "AAPL"): [99.0, 100.0, 101.0],
+        }
+    )
+    multiindex_df.columns = columns
+
+    with patch("src.data.cache.yf.download", return_value=multiindex_df):
+        df, status = cache.fetch_ohlcv("AAPL", "1y")
+
+    assert not isinstance(df.columns, pd.MultiIndex)
+    assert list(df.columns) == ["Close", "Open"]
+    assert status == "live"
+
+
 def test_sql_statements_use_parameterized_placeholders_not_string_interpolation():
     """Structural check (per plan, not a runtime behavior test): every SQL
     statement referencing ticker/period uses `?` placeholders bound via a
