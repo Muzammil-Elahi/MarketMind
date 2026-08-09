@@ -192,6 +192,21 @@ Not scheduled in this roadmap — tracked in REQUIREMENTS.md v2 section:
 
 Trigger for re-evaluation: core recommendation+prediction loop validated in production and users requesting these. Isolated from the v1 critical path specifically because they carry the two most environment-specific risks identified in research (Streamlit Cloud's 1GB memory ceiling colliding with FinBERT, and NewsAPI's dev-only ToS breaking in production).
 
+## Backlog
+
+### Phase 999.1: Scoring explanation depth + portfolio-aware recommendations (BACKLOG)
+
+**Goal:** [Captured for future planning]
+**Requirements:** TBD
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (promote with /gsd-review-backlog when ready)
+
+Captured 2026-08-09 during Phase 3 UAT, when explaining the scoring model to the user surfaced two gaps:
+1. Scoring explanation is currently a single templated sentence (REC-03) — no visibility into *why* each of the 5 sub-scores (Profile Fit/Momentum/Volatility/Quality/Similarity) is what it is.
+2. Recommendations are purely content-based (asset factor profile vs. stated risk tolerance/sector preferences) — existing holdings, already collected on the Profile page, are never read anywhere in `src/recommendation/` or the recommendations/search pages (confirmed by code inspection). No diversification-awareness, overlap detection, or over-concentration guardrails relative to what the user already owns.
+
 ---
 *Roadmap created: 2026-07-14*
 *Granularity: standard*
