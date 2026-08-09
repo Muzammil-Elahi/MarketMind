@@ -124,7 +124,7 @@ Notes:
 
 ## UI Considerations
 
-Applicable state considerations resolved: 12 covered, 4 backstop, 0 unresolved, 1 dismissed.
+Applicable state considerations resolved: 10 covered, 4 backstop, 0 unresolved, 1 dismissed.
 
 | Category | Element(s) | Status | Resolution / Reason |
 |----------|------------|--------|---------------------|
