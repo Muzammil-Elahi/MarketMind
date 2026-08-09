@@ -15,7 +15,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Foundation — Data Layer, Caching & Auth** - Cache-first market-data layer and Supabase auth/session foundation with strict per-user isolation (completed 2026-07-18)
 - [x] **Phase 2: Investor Profile + Feature Engineering Foundation** - Profile builder UI plus a leakage-safe, point-in-time feature pipeline shared by later models (completed 2026-08-03)
-- [ ] **Phase 3: Deterministic Recommendation Engine** - Ranked, explainable, cross-asset-class shortlist from the hybrid factor + collaborative scorer, zero LLM dependency
+- [x] **Phase 3: Deterministic Recommendation Engine** - Ranked, explainable, cross-asset-class shortlist from the hybrid factor + collaborative scorer, zero LLM dependency (completed 2026-08-09)
 - [ ] **Phase 4: Multi-Model Prediction + Walk-Forward Backtesting** - Per-asset forecasts (SMA/XGBoost/Prophet) with confidence intervals and walk-forward-validated accuracy
 - [ ] **Phase 5: LLM Agent Layer (Rerank + Explain)** - Gemini/LangGraph agent reranks/annotates recommendations with a grounded plain-English thesis, read-only over the deterministic score
 - [ ] **Phase 6: Compliance, Watchlist & Launch Readiness** - Disclaimer/non-directive-copy audit across every view, personal watchlist, app ready for deployment
@@ -177,7 +177,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 |-------|----------------|--------|-----------|
 | 1. Foundation — Data Layer, Caching & Auth | 5/5 | Complete    | 2026-07-18 |
 | 2. Investor Profile + Feature Engineering Foundation | 4/4 | Complete    | 2026-08-03 |
-| 3. Deterministic Recommendation Engine | 8/8 | In Progress|  |
+| 3. Deterministic Recommendation Engine | 8/8 | Complete    | 2026-08-09 |
 | 4. Multi-Model Prediction + Walk-Forward Backtesting | 0/TBD | Not started | - |
 | 5. LLM Agent Layer (Rerank + Explain) | 0/TBD | Not started | - |
 | 6. Compliance, Watchlist & Launch Readiness | 0/TBD | Not started | - |
