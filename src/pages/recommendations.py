@@ -45,6 +45,9 @@ PROFILE_NUDGE_MESSAGE = (
 ENGINE_ERROR_MESSAGE = (
     "We couldn't generate recommendations right now. Please try again shortly."
 )
+UNSCORABLE_NOTICE_TEMPLATE = (
+    "{count} asset{plural} {verb} temporarily unavailable and excluded from these results."
+)
 VIEW_DETAILS_LABEL = "View Details"
 SCORE_LABEL_TEMPLATE = "{score}/100"
 BREAKDOWN_HEADING = "Score Breakdown"
@@ -100,11 +103,21 @@ def render_recommendations_page() -> None:
         st.info(PROFILE_NUDGE_MESSAGE)
 
     tickers_with_metadata = _build_tickers_with_metadata()
-    scorable_rows, _unscorable = load_universe_rows(tickers_with_metadata)
+    scorable_rows, unscorable = load_universe_rows(tickers_with_metadata)
 
     if not scorable_rows:
         st.error(ENGINE_ERROR_MESSAGE)
         return
+
+    if unscorable:
+        is_singular = len(unscorable) == 1
+        st.caption(
+            UNSCORABLE_NOTICE_TEMPLATE.format(
+                count=len(unscorable),
+                plural="" if is_singular else "s",
+                verb="was" if is_singular else "were",
+            )
+        )
 
     universe_df = pd.DataFrame(scorable_rows)
     grouped = build_recommendations(profile, universe_df)
