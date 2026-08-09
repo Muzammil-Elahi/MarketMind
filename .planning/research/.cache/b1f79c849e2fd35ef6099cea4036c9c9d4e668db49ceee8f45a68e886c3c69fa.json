@@ -1,0 +1,1 @@
+{"content":"yfinance ticker conventions: forex pairs use =X suffix (EURUSD=X), crypto uses -USD dash pair (BTC-USD), futures use =F (GC=F gold). No canonical curated universe list source found; must be synthesized/assumed.","source":"web","provider":"websearch","confidence":"MEDIUM","fetched_at":"2026-08-05T00:30:40.819Z","ttl":86400000,"kind":"web"}

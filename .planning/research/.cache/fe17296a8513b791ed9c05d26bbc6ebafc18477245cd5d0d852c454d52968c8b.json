@@ -1,0 +1,1 @@
+{"content":"Template-based NLG: fixed phrase-lookup tables keyed by top contributing feature, joined into a sentence. Fast/predictable/maintainable for narrow domains, no LLM needed; can feel repetitive without phrase variants.","source":"web","provider":"websearch","confidence":"MEDIUM","fetched_at":"2026-08-05T00:30:41.024Z","ttl":86400000,"kind":"web"}

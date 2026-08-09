@@ -1,0 +1,1 @@
+{"content":"Cosine similarity via numpy dot-product/norm formula or sklearn.metrics.pairwise.cosine_similarity; for a small in-memory item universe, pure numpy is sufficient, no vector DB needed.","source":"web","provider":"websearch","confidence":"MEDIUM","fetched_at":"2026-08-05T00:30:40.403Z","ttl":86400000,"kind":"web"}

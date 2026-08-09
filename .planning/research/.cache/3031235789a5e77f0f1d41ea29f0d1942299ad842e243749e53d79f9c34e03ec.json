@@ -1,0 +1,1 @@
+{"content":"pandas groupby().transform() with rank(pct=True) or (x-x.mean())/x.std() computes within-group percentile rank / z-score normalization, standard cross-sectional factor-investing normalization pattern before blending into a composite score.","source":"web","provider":"websearch","confidence":"MEDIUM","fetched_at":"2026-08-05T00:30:40.614Z","ttl":86400000,"kind":"web"}

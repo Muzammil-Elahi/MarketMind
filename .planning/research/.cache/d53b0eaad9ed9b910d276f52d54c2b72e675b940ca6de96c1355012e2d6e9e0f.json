@@ -1,0 +1,1 @@
+{"content":"Pandas weighted-sum composite scoring: normalize each factor column (min-max or z-score), then composite = sum(weight_k * normalized_factor_k). Standard MCDA/quant pattern, no special library needed.","source":"web","provider":"websearch","confidence":"MEDIUM","fetched_at":"2026-08-05T00:30:40.200Z","ttl":86400000,"kind":"web"}
