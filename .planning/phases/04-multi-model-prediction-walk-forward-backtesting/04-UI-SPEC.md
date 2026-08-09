@@ -1,10 +1,11 @@
 ---
 phase: 4
 slug: multi-model-prediction-walk-forward-backtesting
-status: draft
+status: approved
 shadcn_initialized: false
 preset: none
 created: 2026-08-09
+reviewed_at: 2026-08-09
 ---
 
 # Phase 4 — UI Design Contract
@@ -166,11 +167,11 @@ No component registries are in use this phase, consistent with Phase 1/2/3's det
 
 ## Checker Sign-Off
 
-- [ ] Dimension 1 Copywriting: PASS
-- [ ] Dimension 2 Visuals: PASS
-- [ ] Dimension 3 Color: PASS
-- [ ] Dimension 4 Typography: PASS
-- [ ] Dimension 5 Spacing: PASS
-- [ ] Dimension 6 Registry Safety: PASS
+- [x] Dimension 1 Copywriting: PASS
+- [x] Dimension 2 Visuals: FLAG (non-blocking — no explicit focal-point sentence for the extended page; recommend declaring the forecast chart w/ CI band as the post-generation anchor and the model/horizon control row as the pre-generation anchor)
+- [x] Dimension 3 Color: PASS
+- [x] Dimension 4 Typography: PASS
+- [x] Dimension 5 Spacing: PASS
+- [x] Dimension 6 Registry Safety: PASS
 
-**Approval:** pending
+**Approval:** approved (2026-08-09) — 1 non-blocking recommendation noted above, no blocking issues
