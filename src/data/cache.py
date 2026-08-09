@@ -61,7 +61,10 @@ def _fetch_live(ticker: str, period: str) -> pd.DataFrame:
     mitigation. ``reraise=True`` so a total failure surfaces as the original
     exception type, not tenacity's own wrapping ``RetryError``.
     """
-    return yf.download(ticker, period=period, progress=False)
+    df = yf.download(ticker, period=period, progress=False)
+    if isinstance(df.columns, pd.MultiIndex):
+        df.columns = df.columns.get_level_values(0)
+    return df
 
 
 def _write_through(ticker: str, period: str, df: pd.DataFrame) -> None:
