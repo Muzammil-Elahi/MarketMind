@@ -30,7 +30,7 @@ See: .planning/PROJECT.md (updated 2026-08-03)
 Phase: 4 — Multi-Model Prediction + Walk-Forward Backtesting
 Plan: Not started
 Status: Ready to plan
-Last activity: 2026-08-09 — Phase 03 complete, transitioned to Phase 4
+Last activity: 2026-08-09 - Completed quick task 260809-j0k: Fix MultiIndex-columns bug in src/data/cache.py's yfinance fetch
 
 Progress: [████████████████████] 9/9 plans ([██████████] 100%) · 2/6 phases complete
 
@@ -127,6 +127,12 @@ None yet.
 - Research flagged: Phase 3 needs its own research pass on cross-asset-class factor-weight normalization (stocks/24-7 crypto/forex/gold behave very differently) — no authoritative pattern found during initial research.
 - Research flagged: Phase 5 (LangGraph 1.0 LTS + Gemini) is a newer, less-established combination — verify exact free-tier model list and rate limits at build time.
 - [Phase 2] Recommendation-update-on-profile-edit clause of PROFILE-02 is explicitly deferred to Phase 3 per ROADMAP scoping — Phase 3's recommendation engine must actually pick up edited profiles, not just persist them.
+
+### Quick Tasks Completed
+
+| # | Description | Date | Commit | Directory |
+|---|-------------|------|--------|-----------|
+| 260809-j0k | Fix MultiIndex-columns bug in src/data/cache.py's yfinance fetch (breaks feature computation for every ticker) | 2026-08-09 | b98e9f2 | [260809-j0k-fix-multiindex-columns-bug-in-src-data-c](./quick/260809-j0k-fix-multiindex-columns-bug-in-src-data-c/) |
 
 ## Deferred Items
 
