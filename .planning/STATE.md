@@ -4,9 +4,9 @@ milestone: v1.0
 milestone_name: milestone
 current_phase: 4
 current_phase_name: Multi-Model Prediction + Walk-Forward Backtesting
-status: planning
-stopped_at: Phase 4 context gathered
-last_updated: "2026-08-09T19:40:52.534Z"
+status: executing
+stopped_at: Phase 04 UI-SPEC approved
+last_updated: "2026-08-09T23:31:02.931Z"
 last_activity: 2026-08-09
 last_activity_desc: "Completed quick task 260809-j0k: Fix MultiIndex-columns bug in src/data/cache.py's yfinance fetch"
 progress:
@@ -29,7 +29,7 @@ See: .planning/PROJECT.md (updated 2026-08-03)
 
 Phase: 4 — Multi-Model Prediction + Walk-Forward Backtesting
 Plan: Not started
-Status: Ready to plan
+Status: Ready to execute
 Last activity: 2026-08-09 - Completed quick task 260809-j0k: Fix MultiIndex-columns bug in src/data/cache.py's yfinance fetch
 
 Progress: [████████████████████] 9/9 plans ([██████████] 100%) · 2/6 phases complete
@@ -146,6 +146,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-08-09T19:40:52.494Z
-Stopped at: Phase 4 context gathered
-Resume file: .planning/phases/04-multi-model-prediction-walk-forward-backtesting/04-CONTEXT.md
+Last session: 2026-08-09T22:40:19.056Z
+Stopped at: Phase 04 UI-SPEC approved
+Resume file: .planning/phases/04-multi-model-prediction-walk-forward-backtesting/04-UI-SPEC.md
