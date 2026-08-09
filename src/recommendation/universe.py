@@ -72,9 +72,12 @@ def infer_asset_class(ticker: str) -> str:
     supported asset classes, using yfinance's own suffix convention.
 
     Checks, in order: ``=X`` suffix -> Forex; ``-USD`` suffix -> Crypto;
-    a known gold ticker or ``=F`` suffix -> Gold; else falls back to
-    Stocks (Stocks/ETFs share no distinguishing ticker suffix, so Stocks is
-    used as the broader default).
+    a known gold ticker or ``=F`` suffix -> Gold; a curated ETF universe
+    member -> ETFs; else falls back to Stocks (Stocks/ETFs share no
+    distinguishing ticker suffix, so ETF-universe membership is checked
+    explicitly before Stocks is used as the broader default -- this only
+    correctly classifies ETFs already in the curated universe, since peer
+    data only exists for curated tickers anyway).
     """
     if ticker.endswith("=X"):
         return "Forex"
@@ -82,4 +85,6 @@ def infer_asset_class(ticker: str) -> str:
         return "Crypto"
     if ticker in GOLD_UNIVERSE or ticker.endswith("=F"):
         return "Gold"
+    if ticker in ETF_UNIVERSE:
+        return "ETFs"
     return "Stocks"
