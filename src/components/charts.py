@@ -20,7 +20,10 @@ def build_breakdown_figure(sub_scores_display: dict) -> go.Figure:
 
     Preserves the input dict's iteration order (never re-sorted by value)
     so REC-02's fixed sub-factor display order (SUB_SCORE_ORDER from
-    explain.py) is respected.
+    explain.py) is respected. Plotly renders the first ``y`` category at
+    the bottom of a horizontal bar chart by default, so the y-axis is
+    explicitly reversed to make the rendered chart read top-to-bottom in
+    the same order as ``sub_scores_display``.
     """
     bar = go.Bar(
         x=list(sub_scores_display.values()),
@@ -28,7 +31,9 @@ def build_breakdown_figure(sub_scores_display: dict) -> go.Figure:
         orientation="h",
         marker_color=CHART_MARK_COLOR,
     )
-    return go.Figure(data=[bar])
+    fig = go.Figure(data=[bar])
+    fig.update_yaxes(autorange="reversed")
+    return fig
 
 
 def render_breakdown_bar_chart(sub_scores_display: dict, key: str) -> None:
