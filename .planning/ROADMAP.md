@@ -136,7 +136,32 @@ Plans:
   3. The forecast chart displays confidence intervals around the future prediction.
   4. User can see backtested accuracy (RMSE, directional accuracy, Sharpe) per model, computed via walk-forward validation with no lookahead bias.
 
-**Plans**: TBD
+**Plans**: 9 plans
+Plans:
+**Wave 1**
+
+- [ ] 04-01-PLAN.md — Package legitimacy checkpoint + install xgboost/prophet/scikit-learn + prediction package skeleton
+- [ ] 04-02-PLAN.md — Forecast chart builder (build_forecast_figure/render_forecast_chart, PRED-03)
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] 04-03-PLAN.md — Walk-forward fold generator (TimeSeriesSplit) + shared backtest metrics module
+- [ ] 04-04-PLAN.md — SMA baseline model + XGBoost direct-horizon quantile model
+- [ ] 04-05-PLAN.md — Prophet model, import-guarded
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
+- [ ] 04-06-PLAN.md — Walk-forward backtest orchestrator + generate_forecast engine (D-01-D-06 dispatch)
+- [ ] 04-07-PLAN.md — Prediction data loader (5y fetch, D-07/D-08 minimum-history gate)
+
+**Wave 4** *(blocked on Wave 3 completion)*
+
+- [ ] 04-08-PLAN.md — Search page: model/horizon controls, Generate Forecast, forecast+backtest rendering (D-01-D-05/D-07/D-08)
+
+**Wave 5** *(blocked on Wave 4 completion)*
+
+- [ ] 04-09-PLAN.md — Search page: Compare All Models — dialog + persistent banner + toast + 3-column view (D-06)
+
 **UI hint**: yes
 
 ### Phase 5: LLM Agent Layer (Rerank + Explain)
@@ -178,7 +203,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | 1. Foundation — Data Layer, Caching & Auth | 5/5 | Complete    | 2026-07-18 |
 | 2. Investor Profile + Feature Engineering Foundation | 4/4 | Complete    | 2026-08-03 |
 | 3. Deterministic Recommendation Engine | 8/8 | Complete    | 2026-08-09 |
-| 4. Multi-Model Prediction + Walk-Forward Backtesting | 0/TBD | Not started | - |
+| 4. Multi-Model Prediction + Walk-Forward Backtesting | 0/9 | Not started | - |
 | 5. LLM Agent Layer (Rerank + Explain) | 0/TBD | Not started | - |
 | 6. Compliance, Watchlist & Launch Readiness | 0/TBD | Not started | - |
 
