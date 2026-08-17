@@ -22,10 +22,18 @@ import pandas as pd
 import streamlit as st
 
 from src.auth.session import require_auth
-from src.components.charts import render_breakdown_bar_chart, render_price_history_chart
+from src.components.charts import (
+    render_breakdown_bar_chart,
+    render_forecast_chart,
+    render_price_history_chart,
+)
 from src.components.disclaimer import render_disclaimer_banner
+from src.config import CACHE_TTL_SECONDS
 from src.data.profile import fetch_profile
+from src.pages._prediction_loader import fetch_prediction_data
 from src.pages._universe_loader import fetch_scorable_row, load_universe_rows
+from src.prediction.engine import MODEL_LABELS, VALID_HORIZONS, generate_forecast
+from src.prediction.metrics import format_metrics_for_display
 from src.recommendation.engine import score_universe
 from src.recommendation.universe import ASSET_CLASS_SECTORS, ASSET_CLASS_TICKERS, infer_asset_class
 
@@ -46,6 +54,59 @@ INSUFFICIENT_DATA_BODY_TEMPLATE = (
 )
 SCORE_LABEL_TEMPLATE = "{score}/100"
 BREAKDOWN_HEADING = "Score Breakdown"
+
+MODEL_DROPDOWN_LABEL = "Prediction Model"
+MODEL_DROPDOWN_PLACEHOLDER = "Select a model"
+HORIZON_SELECTOR_LABEL = "Forecast Horizon"
+GENERATE_FORECAST_LABEL = "Generate Forecast"
+PRE_GENERATION_HINT = (
+    "Select a model and horizon, then click Generate Forecast to see a prediction."
+)
+CI_CAPTION = "Shaded band shows an 80% confidence interval."
+BACKTEST_SECTION_HEADING = "Backtested Accuracy"
+BACKTEST_HYPOTHETICAL_CAPTION = (
+    "Backtested using walk-forward validation on historical data. Hypothetical "
+    "results — past performance does not guarantee future accuracy."
+)
+METRIC_LABELS = {
+    "rmse": "RMSE",
+    "directional_accuracy": "Directional Accuracy",
+    "sharpe": "Sharpe Ratio (Simulated)",
+}
+INSUFFICIENT_HISTORY_MESSAGE = (
+    "Not enough price history to generate a reliable forecast for this asset."
+)
+PROPHET_UNAVAILABLE_MESSAGE = (
+    "Prophet isn't available right now — try SMA Baseline or XGBoost instead."
+)
+FORECAST_ERROR_MESSAGE = (
+    "We couldn't generate a forecast right now. Please try again shortly."
+)
+HORIZON_LABELS = {7: "7 Days", 30: "30 Days", 90: "90 Days"}
+
+
+@st.cache_data(ttl=CACHE_TTL_SECONDS, show_spinner=False)
+def resolve_forecast_request(
+    ticker: str,
+    model: str,
+    horizon_days: int,
+    feature_frame: pd.DataFrame,
+    price_series: pd.Series,
+    asset_class: str,
+) -> dict:
+    """Cached thin wrapper around ``generate_forecast`` (T-04-03 DoS
+    mitigation).
+
+    ``src.prediction.engine`` stays zero-I/O and cannot import
+    ``streamlit`` itself, so the ``st.cache_data`` memoization boundary
+    must live here, at the page layer. Keyed on all six arguments
+    including the ``feature_frame``/``price_series`` DataFrame/Series
+    content (Streamlit's built-in DataFrame/Series hashing handles this) --
+    a repeat "Generate Forecast" click with identical arguments is served
+    from cache instantly instead of re-running a CPU-heavy model training
+    pass.
+    """
+    return generate_forecast(ticker, model, horizon_days, feature_frame, price_series, asset_class)
 
 
 def resolve_search_result(ticker: str, profile: dict) -> dict:
