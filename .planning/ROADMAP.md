@@ -136,7 +136,7 @@ Plans:
   3. The forecast chart displays confidence intervals around the future prediction.
   4. User can see backtested accuracy (RMSE, directional accuracy, Sharpe) per model, computed via walk-forward validation with no lookahead bias.
 
-**Plans**: 8/9 plans executed
+**Plans**: 9/9 plans executed
 Plans:
 **Wave 1**
 
@@ -160,7 +160,7 @@ Plans:
 
 **Wave 5** *(blocked on Wave 4 completion)*
 
-- [ ] 04-09-PLAN.md — Search page: Compare All Models — dialog + persistent banner + toast + 3-column view (D-06)
+- [x] 04-09-PLAN.md — Search page: Compare All Models — dialog + persistent banner + toast + 3-column view (D-06)
 
 **UI hint**: yes
 
@@ -203,7 +203,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | 1. Foundation — Data Layer, Caching & Auth | 5/5 | Complete    | 2026-07-18 |
 | 2. Investor Profile + Feature Engineering Foundation | 4/4 | Complete    | 2026-08-03 |
 | 3. Deterministic Recommendation Engine | 8/8 | Complete    | 2026-08-09 |
-| 4. Multi-Model Prediction + Walk-Forward Backtesting | 8/9 | In Progress|  |
+| 4. Multi-Model Prediction + Walk-Forward Backtesting | 9/9 | In Progress|  |
 | 5. LLM Agent Layer (Rerank + Explain) | 0/TBD | Not started | - |
 | 6. Compliance, Watchlist & Launch Readiness | 0/TBD | Not started | - |
 
