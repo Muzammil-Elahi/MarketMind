@@ -162,6 +162,34 @@ def test_perturbation_inside_last_fold_test_window_does_not_leak_into_earlier_fo
     assert baseline_truncated_metrics == perturbed_truncated_metrics
 
 
+def test_run_backtest_zero_actual_start_does_not_produce_nan_or_inf_metrics():
+    """WR-04: a zero actual_start (e.g. bad upstream data, or a pip-scale
+    forex value rounding to 0) must not silently poison captured_returns
+    with inf/NaN that then propagates into metrics.sharpe_ratio's
+    mean/std -- proven by forcing exactly one fold's actual_start
+    (price_series at that fold's train_index[-1]) to 0.0 and asserting
+    every returned metric is finite."""
+    feature_frame, price_series = _fixture()
+    folds = make_folds(len(price_series), HORIZON_DAYS)
+    # Zero the LAST fold's final training row specifically -- expanding-
+    # window folds share prefix training data, so zeroing an earlier
+    # fold's train_index[-1] would also land as a *mid-window* point in
+    # every later fold's training close series, tripping sma_model's own
+    # pct_change()-based drift/sigma computation (an unrelated inf source,
+    # not the actual_start division-by-zero this test targets). The last
+    # fold's train_index[-1] is the highest training index overall and is
+    # never a mid-window point for any fold, isolating the guard under test.
+    train_index, _test_index = folds[-1]
+
+    zeroed_price_series = price_series.copy()
+    zeroed_price_series.iloc[train_index[-1]] = 0.0
+
+    result = run_backtest("sma", feature_frame, zeroed_price_series, HORIZON_DAYS, "Stocks")
+
+    for key, value in result.items():
+        assert np.isfinite(value), f"{key} must be finite, got {value}"
+
+
 def test_module_has_no_prohibited_io_imports():
     import inspect
 

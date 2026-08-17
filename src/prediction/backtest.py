@@ -118,7 +118,19 @@ def run_backtest(
 
     predicted_direction = np.sign(predicted_endpoints - actual_starts)
     actual_direction = np.sign(actual_endpoints - actual_starts)
-    captured_returns = predicted_direction * (actual_endpoints / actual_starts - 1)
+
+    # Guard against division-by-zero (WR-04): a literal-zero actual_start
+    # (bad upstream data) would otherwise silently poison captured_returns
+    # with inf/NaN and propagate into metrics.sharpe_ratio's mean/std --
+    # matching this module's own metrics.sharpe_ratio `std == 0 -> 0.0`
+    # zero-division guard convention (and
+    # src/recommendation/similarity.py's cosine_similarity zero-vector
+    # guard) rather than leaving this division unguarded. Folds with a
+    # zero actual_start contribute 0.0 (no signal) instead of inf/NaN.
+    safe_starts = np.where(actual_starts == 0, np.nan, actual_starts)
+    with np.errstate(invalid="ignore"):
+        fold_returns = actual_endpoints / safe_starts - 1
+    captured_returns = np.nan_to_num(predicted_direction * fold_returns, nan=0.0)
 
     return {
         "rmse": metrics.rmse(predicted_endpoints, actual_endpoints),
