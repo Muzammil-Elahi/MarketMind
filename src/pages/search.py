@@ -195,6 +195,7 @@ def render_search_page() -> None:
         st.warning(INSUFFICIENT_DATA_BADGE)
         st.write(INSUFFICIENT_DATA_BODY_TEMPLATE.format(ticker=result["ticker"]))
         render_price_history_chart(result["chart_df"], key=f"chart_{result['ticker']}")
+        _render_prediction_section(result["ticker"], infer_asset_class(result["ticker"]))
         return
 
     st.subheader(result["ticker"])
@@ -203,3 +204,102 @@ def render_search_page() -> None:
     st.subheader(BREAKDOWN_HEADING)
     render_breakdown_bar_chart(result["sub_scores_display"], key=f"breakdown_{result['ticker']}")
     st.write(result["explanation"])
+    _render_prediction_section(result["ticker"], infer_asset_class(result["ticker"]))
+
+
+def _render_prediction_section(ticker: str, asset_class: str) -> None:
+    """Render the D-01/D-02/D-03/D-04/D-05/D-07/D-08 single-model
+    prediction flow below the historical price chart/breakdown.
+
+    Defensively returns silently if ``fetch_prediction_data`` reports
+    ``"not_found"`` -- should not normally occur, since the caller already
+    proved this ticker resolves via ``resolve_search_result``, mirroring
+    that function's own documented defensive-fallback precedent.
+    """
+    prediction_data = fetch_prediction_data(ticker)
+    if prediction_data["status"] == "not_found":
+        return
+
+    insufficient = prediction_data["status"] == "insufficient_data"
+
+    col_model, col_horizon, col_button = st.columns(3)
+    with col_model:
+        model_choice = st.selectbox(
+            MODEL_DROPDOWN_LABEL,
+            options=list(MODEL_LABELS),
+            format_func=lambda m: MODEL_LABELS[m],
+            index=None,
+            placeholder=MODEL_DROPDOWN_PLACEHOLDER,
+            disabled=insufficient,
+            key=f"model_{ticker}",
+        )
+    with col_horizon:
+        horizon_choice = st.selectbox(
+            HORIZON_SELECTOR_LABEL,
+            options=sorted(VALID_HORIZONS),
+            format_func=lambda h: HORIZON_LABELS[h],
+            index=1,
+            disabled=insufficient,
+            key=f"horizon_{ticker}",
+        )
+    with col_button:
+        generate_clicked = st.button(
+            GENERATE_FORECAST_LABEL,
+            disabled=(insufficient or model_choice is None),
+            key=f"generate_{ticker}",
+        )
+
+    if insufficient:
+        st.warning(INSUFFICIENT_HISTORY_MESSAGE)
+        return
+
+    if model_choice is None:
+        st.caption(PRE_GENERATION_HINT)
+        return
+
+    result_key = f"forecast_{ticker}_{model_choice}_{horizon_choice}"
+    if generate_clicked:
+        with st.spinner(f"Generating {MODEL_LABELS[model_choice]} forecast..."):
+            st.session_state[result_key] = resolve_forecast_request(
+                ticker,
+                model_choice,
+                horizon_choice,
+                prediction_data["feature_frame"],
+                prediction_data["price_series"],
+                asset_class,
+            )
+
+    forecast_result = st.session_state.get(result_key)
+    if forecast_result is None:
+        st.caption(PRE_GENERATION_HINT)
+        return
+
+    if forecast_result["status"] == "prophet_unavailable":
+        st.warning(PROPHET_UNAVAILABLE_MESSAGE)
+        return
+
+    if forecast_result["status"] == "error":
+        st.error(FORECAST_ERROR_MESSAGE)
+        return
+
+    render_forecast_chart(
+        prediction_data["chart_df"],
+        forecast_result["forecast_index"],
+        forecast_result["forecast"],
+        forecast_result["ci_lower"],
+        forecast_result["ci_upper"],
+        key=f"forecast_chart_{ticker}_{model_choice}_{horizon_choice}",
+    )
+    st.caption(CI_CAPTION)
+    st.subheader(BACKTEST_SECTION_HEADING)
+    _render_backtest_metrics_table(forecast_result["backtest_metrics"])
+    st.caption(BACKTEST_HYPOTHETICAL_CAPTION)
+
+
+def _render_backtest_metrics_table(backtest_metrics: dict) -> None:
+    """Render the D-05 backtested-accuracy metrics table, mirroring the
+    Score Breakdown card's bordered-container surface convention."""
+    display_values = format_metrics_for_display(backtest_metrics)
+    with st.container(border=True):
+        for key in ("rmse", "directional_accuracy", "sharpe"):
+            st.metric(METRIC_LABELS[key], display_values[key])
