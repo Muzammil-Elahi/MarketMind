@@ -125,5 +125,5 @@ def run_backtest(
         "directional_accuracy": metrics.directional_accuracy(
             predicted_direction, actual_direction
         ),
-        "sharpe": metrics.sharpe_ratio(captured_returns, asset_class),
+        "sharpe": metrics.sharpe_ratio(captured_returns, asset_class, horizon_days),
     }

@@ -37,17 +37,26 @@ def directional_accuracy(
     return float(np.mean(predicted_direction == actual_direction))
 
 
-def sharpe_ratio(captured_returns: np.ndarray, asset_class: str) -> float:
+def sharpe_ratio(
+    captured_returns: np.ndarray, asset_class: str, horizon_days: int
+) -> float:
     """Annualized Sharpe ratio of a signal-following long/short strategy
     driven by this model's predicted direction each backtest fold.
 
     ``captured_returns`` is a small (``N_FOLDS``-length, i.e. 5-element)
     array of per-fold signal-following realized returns, not daily
     returns -- a documented v1 simplification (04-RESEARCH.md Assumptions
-    Log A-05). This value is a descriptive backtest statistic only, never
-    a guarantee or trading instruction (COMPLY-02-adjacent framing carried
-    through to the UI layer in Plan 08's "Sharpe Ratio (Simulated)"
-    label).
+    Log A-05). Each element is realized over ``horizon_days`` (the
+    backtest's selected forecast horizon), not over one trading day, so
+    the annualization factor must be scaled by how many ``horizon_days``-
+    length periods fit in a year (``periods_per_year / horizon_days``) --
+    never a flat ``periods_per_year`` treated as if returns were daily
+    (WR-02): that would overstate the annualized figure, and by a
+    different amount at each horizon, making the metric incomparable
+    across the horizon selector. This value is a descriptive backtest
+    statistic only, never a guarantee or trading instruction
+    (COMPLY-02-adjacent framing carried through to the UI layer in Plan
+    08's "Sharpe Ratio (Simulated)" label).
 
     Guarded against division-by-zero: returns 0.0 (never NaN/inf, never
     raises) when captured_returns.std() == 0, matching
@@ -60,7 +69,8 @@ def sharpe_ratio(captured_returns: np.ndarray, asset_class: str) -> float:
     std = captured_returns.std()
     if std == 0:
         return 0.0
-    return float(captured_returns.mean() / std * np.sqrt(periods_per_year))
+    periods_per_year_at_horizon = periods_per_year / horizon_days
+    return float(captured_returns.mean() / std * np.sqrt(periods_per_year_at_horizon))
 
 
 def _round_half_up(value: float, decimals: int) -> float:

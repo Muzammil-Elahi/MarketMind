@@ -46,7 +46,7 @@ def test_directional_accuracy_partial_match_returns_fraction():
 
 def test_sharpe_ratio_zero_std_returns_zero_never_nan_or_inf():
     captured_returns = np.array([0.01, 0.01, 0.01, 0.01, 0.01])
-    result = sharpe_ratio(captured_returns, "stocks")
+    result = sharpe_ratio(captured_returns, "stocks", horizon_days=7)
     assert result == 0.0
     assert not np.isnan(result)
     assert not np.isinf(result)
@@ -54,14 +54,14 @@ def test_sharpe_ratio_zero_std_returns_zero_never_nan_or_inf():
 
 def test_sharpe_ratio_crypto_differs_from_stocks_for_nonzero_variance():
     captured_returns = np.array([0.01, -0.02, 0.03, -0.01, 0.02])
-    crypto_sharpe = sharpe_ratio(captured_returns, "crypto")
-    stocks_sharpe = sharpe_ratio(captured_returns, "stocks")
+    crypto_sharpe = sharpe_ratio(captured_returns, "crypto", horizon_days=7)
+    stocks_sharpe = sharpe_ratio(captured_returns, "stocks", horizon_days=7)
     assert crypto_sharpe != stocks_sharpe
 
 
 def test_sharpe_ratio_unrecognized_asset_class_falls_back_to_default():
     captured_returns = np.array([0.01, -0.02, 0.03, -0.01, 0.02])
-    result = sharpe_ratio(captured_returns, "an-unrecognized-asset-class")
+    result = sharpe_ratio(captured_returns, "an-unrecognized-asset-class", horizon_days=7)
     periods_per_year = TRADING_DAYS_PER_YEAR.get(
         "an-unrecognized-asset-class", DEFAULT_TRADING_DAYS_PER_YEAR
     )
@@ -69,9 +69,35 @@ def test_sharpe_ratio_unrecognized_asset_class_falls_back_to_default():
     expected = float(
         captured_returns.mean()
         / captured_returns.std()
-        * np.sqrt(DEFAULT_TRADING_DAYS_PER_YEAR)
+        * np.sqrt(DEFAULT_TRADING_DAYS_PER_YEAR / 7)
     )
     assert result == expected
+
+
+def test_sharpe_ratio_scales_annualization_by_horizon_days():
+    """WR-02: each captured_returns element is realized over horizon_days,
+    not one trading day -- the annualization factor must shrink as
+    horizon_days grows (fewer horizon-length periods fit in a year), never
+    stay flat regardless of horizon. Proven via the exact expected formula,
+    not just a not-equal check, at two different horizons for the identical
+    returns array."""
+    captured_returns = np.array([0.01, -0.02, 0.03, -0.01, 0.02])
+
+    sharpe_7 = sharpe_ratio(captured_returns, "stocks", horizon_days=7)
+    sharpe_90 = sharpe_ratio(captured_returns, "stocks", horizon_days=90)
+
+    mean = captured_returns.mean()
+    std = captured_returns.std()
+    expected_7 = float(mean / std * np.sqrt(DEFAULT_TRADING_DAYS_PER_YEAR / 7))
+    expected_90 = float(mean / std * np.sqrt(DEFAULT_TRADING_DAYS_PER_YEAR / 90))
+
+    assert sharpe_7 == expected_7
+    assert sharpe_90 == expected_90
+    assert abs(sharpe_7) > abs(sharpe_90), (
+        "a 90-day horizon has fewer periods per year than a 7-day horizon, "
+        "so its annualized Sharpe magnitude must be smaller for the same "
+        "per-fold mean/std"
+    )
 
 
 def test_format_metrics_for_display_uses_round_half_up_and_includes_all_keys():
