@@ -28,13 +28,24 @@ DEFAULT_FIXTURE_ROWS = 300
 
 
 def sample_ohlcv(n_rows: int) -> pd.DataFrame:
-    """A small, deterministic synthetic OHLCV DataFrame (sinusoidal wiggle
-    on top of a mild upward trend), matching
-    tests/test_universe_loader.py's/tests/test_prediction_xgboost.py's
-    ``_sample_ohlcv`` shape."""
+    """A small, deterministic (fixed-seed) synthetic OHLCV DataFrame
+    (sinusoidal wiggle + a mild upward trend + a little i.i.d. noise) on
+    top of tests/test_universe_loader.py's/tests/test_prediction_xgboost.py's
+    ``_sample_ohlcv`` shape.
+
+    The added noise (mirroring tests/test_prediction_prophet.py's
+    ``_synthetic_close`` helper) gives Prophet's residual-based
+    uncertainty estimate nonzero variance to work with -- without it,
+    Prophet's forecast-band width across a short (7-day) horizon can land
+    within stochastic MCMC-sampling noise of a flat line, making the
+    CI-band-widens-with-horizon invariant (PRED-03) an unreliable coin
+    flip rather than a genuine, reproducible property of this fixture.
+    """
+    rng = np.random.default_rng(seed=42)
     dates = pd.date_range("2020-01-01", periods=n_rows, freq="D")
+    noise = rng.normal(0, 0.3, n_rows)
     close = pd.Series(
-        100 + np.sin(np.arange(n_rows) / 3.0) * 5 + np.arange(n_rows) * 0.05,
+        100 + np.sin(np.arange(n_rows) / 3.0) * 5 + np.arange(n_rows) * 0.05 + noise,
         index=dates,
         dtype=float,
     )
