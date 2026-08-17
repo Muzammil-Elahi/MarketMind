@@ -28,9 +28,9 @@ Requirements for initial release. Each maps to roadmap phases.
 ### Price Prediction
 
 - [ ] **PRED-01**: User can drill into any asset (recommended or searched) and see a historical price chart
-- [ ] **PRED-02**: User can select a prediction model (SMA baseline, XGBoost, or Prophet) and a forecast horizon, and generate a forecast
+- [x] **PRED-02**: User can select a prediction model (SMA baseline, XGBoost, or Prophet) and a forecast horizon, and generate a forecast
 - [x] **PRED-03**: The forecast chart displays confidence intervals around the future prediction
-- [ ] **PRED-04**: User can see backtested accuracy per model (RMSE, directional accuracy, Sharpe), computed via walk-forward validation with no lookahead bias
+- [x] **PRED-04**: User can see backtested accuracy per model (RMSE, directional accuracy, Sharpe), computed via walk-forward validation with no lookahead bias
 
 ### LLM Agent
 
@@ -94,9 +94,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | REC-03 | Phase 3 | Complete |
 | REC-04 | Phase 3 | Complete |
 | PRED-01 | Phase 4 | Pending |
-| PRED-02 | Phase 4 | Pending |
+| PRED-02 | Phase 4 | Complete |
 | PRED-03 | Phase 4 | Complete |
-| PRED-04 | Phase 4 | Pending |
+| PRED-04 | Phase 4 | Complete |
 | AGENT-01 | Phase 5 | Pending |
 | AGENT-02 | Phase 5 | Pending |
 | COMPLY-01 | Phase 6 | Pending |
