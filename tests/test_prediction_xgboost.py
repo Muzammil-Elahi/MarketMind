@@ -9,6 +9,7 @@ fits prove the actual quantile-regression math works. No network calls.
 
 import numpy as np
 import pandas as pd
+from xgboost import XGBRegressor
 
 from src.features.feature_frame import assemble_feature_frame
 from src.prediction.xgboost_model import (
@@ -134,6 +135,38 @@ def test_forecast_forward_bounds_hold_for_every_step():
 
     assert (result["ci_lower"] <= result["forecast"]).all()
     assert (result["forecast"] <= result["ci_upper"]).all()
+
+
+def test_fit_predict_sorts_endpoints_when_quantile_regressors_cross(monkeypatch):
+    """Independently-fit quantile regressors are not guaranteed monotonic
+    (the well-documented "quantile crossing" failure mode). Force a crossed
+    prediction by monkeypatching XGBRegressor.predict to return out-of-order
+    quantile values (median above the 0.9 quantile, 0.1 quantile above the
+    median) and assert fit_predict still returns a correctly-ordered
+    endpoint triple -- proving the sorted() guard in fit_predict actually
+    holds, not just that a clean synthetic fixture happens not to trigger
+    crossing."""
+    features, close = _sample_features_and_close(n_rows=60)
+    horizon_days = 7
+
+    # Map each trained model to a distinct, deliberately out-of-order
+    # prediction: alpha=0.1 -> 150 (should be lowest, but isn't),
+    # alpha=0.5 -> 200 (median, highest of the three as patched),
+    # alpha=0.9 -> 100 (should be highest, but isn't).
+    crossed_predictions = {0.1: 150.0, 0.5: 200.0, 0.9: 100.0}
+
+    def fake_predict(self, X):
+        return np.array([crossed_predictions[self.get_params()["quantile_alpha"]]])
+
+    monkeypatch.setattr(XGBRegressor, "predict", fake_predict)
+
+    result = fit_predict(features, close, horizon_days)
+
+    assert result["ci_lower_endpoint"] == 100.0
+    assert result["forecast_endpoint"] == 150.0
+    assert result["ci_upper_endpoint"] == 200.0
+    assert result["ci_lower_endpoint"] <= result["forecast_endpoint"]
+    assert result["forecast_endpoint"] <= result["ci_upper_endpoint"]
 
 
 def test_quantiles_constant_value():

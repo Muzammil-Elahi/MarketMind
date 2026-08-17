@@ -60,10 +60,26 @@ def fit_predict(features: pd.DataFrame, close: pd.Series, horizon_days: int) -> 
     # Live forward forecast: predict off the most recent feature row (no
     # target exists for it yet -- that's the point).
     latest_row = features.iloc[[-1]]
+    forecast_endpoint = float(models[0.5].predict(latest_row)[0])
+    ci_lower_endpoint = float(models[0.1].predict(latest_row)[0])
+    ci_upper_endpoint = float(models[0.9].predict(latest_row)[0])
+
+    # Guard against quantile crossing: the three quantile regressors are
+    # trained independently and are not guaranteed to produce monotonic
+    # predictions (well-documented failure mode of independently-fit
+    # quantile regression trees, especially when extrapolating beyond the
+    # training price range -- the exact scenario a future-horizon endpoint
+    # prediction hits). Sorting the three endpoint values enforces
+    # ci_lower_endpoint <= forecast_endpoint <= ci_upper_endpoint no matter
+    # which underlying model "wins" at a given quantile.
+    ci_lower_endpoint, forecast_endpoint, ci_upper_endpoint = sorted(
+        (ci_lower_endpoint, forecast_endpoint, ci_upper_endpoint)
+    )
+
     return {
-        "forecast_endpoint": float(models[0.5].predict(latest_row)[0]),
-        "ci_lower_endpoint": float(models[0.1].predict(latest_row)[0]),
-        "ci_upper_endpoint": float(models[0.9].predict(latest_row)[0]),
+        "forecast_endpoint": forecast_endpoint,
+        "ci_lower_endpoint": ci_lower_endpoint,
+        "ci_upper_endpoint": ci_upper_endpoint,
     }
 
 
