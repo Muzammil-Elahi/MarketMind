@@ -136,12 +136,12 @@ Plans:
   3. The forecast chart displays confidence intervals around the future prediction.
   4. User can see backtested accuracy (RMSE, directional accuracy, Sharpe) per model, computed via walk-forward validation with no lookahead bias.
 
-**Plans**: 9 plans
+**Plans**: 2/9 plans executed
 Plans:
 **Wave 1**
 
-- [ ] 04-01-PLAN.md — Package legitimacy checkpoint + install xgboost/prophet/scikit-learn + prediction package skeleton
-- [ ] 04-02-PLAN.md — Forecast chart builder (build_forecast_figure/render_forecast_chart, PRED-03)
+- [x] 04-01-PLAN.md — Package legitimacy checkpoint + install xgboost/prophet/scikit-learn + prediction package skeleton
+- [x] 04-02-PLAN.md — Forecast chart builder (build_forecast_figure/render_forecast_chart, PRED-03)
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
@@ -203,7 +203,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | 1. Foundation — Data Layer, Caching & Auth | 5/5 | Complete    | 2026-07-18 |
 | 2. Investor Profile + Feature Engineering Foundation | 4/4 | Complete    | 2026-08-03 |
 | 3. Deterministic Recommendation Engine | 8/8 | Complete    | 2026-08-09 |
-| 4. Multi-Model Prediction + Walk-Forward Backtesting | 0/9 | Not started | - |
+| 4. Multi-Model Prediction + Walk-Forward Backtesting | 2/9 | In Progress|  |
 | 5. LLM Agent Layer (Rerank + Explain) | 0/TBD | Not started | - |
 | 6. Compliance, Watchlist & Launch Readiness | 0/TBD | Not started | - |
 
@@ -226,9 +226,11 @@ Trigger for re-evaluation: core recommendation+prediction loop validated in prod
 **Plans:** 0 plans
 
 Plans:
+
 - [ ] TBD (promote with /gsd-review-backlog when ready)
 
 Captured 2026-08-09 during Phase 3 UAT, when explaining the scoring model to the user surfaced two gaps:
+
 1. Scoring explanation is currently a single templated sentence (REC-03) — no visibility into *why* each of the 5 sub-scores (Profile Fit/Momentum/Volatility/Quality/Similarity) is what it is.
 2. Recommendations are purely content-based (asset factor profile vs. stated risk tolerance/sector preferences) — existing holdings, already collected on the Profile page, are never read anywhere in `src/recommendation/` or the recommendations/search pages (confirmed by code inspection). No diversification-awareness, overlap detection, or over-concentration guardrails relative to what the user already owns.
 
