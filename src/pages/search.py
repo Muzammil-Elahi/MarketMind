@@ -32,7 +32,7 @@ from src.config import CACHE_TTL_SECONDS
 from src.data.profile import fetch_profile
 from src.pages._prediction_loader import fetch_prediction_data
 from src.pages._universe_loader import fetch_scorable_row, load_universe_rows
-from src.prediction.engine import MODEL_LABELS, VALID_HORIZONS, generate_forecast
+from src.prediction.engine import HORIZON_LABELS, MODEL_LABELS, VALID_HORIZONS, generate_forecast
 from src.prediction.metrics import format_metrics_for_display
 from src.recommendation.engine import score_universe
 from src.recommendation.universe import ASSET_CLASS_SECTORS, ASSET_CLASS_TICKERS, infer_asset_class
@@ -82,8 +82,6 @@ PROPHET_UNAVAILABLE_MESSAGE = (
 FORECAST_ERROR_MESSAGE = (
     "We couldn't generate a forecast right now. Please try again shortly."
 )
-HORIZON_LABELS = {7: "7 Days", 30: "30 Days", 90: "90 Days"}
-
 COMPARE_ALL_MODELS_LABEL = "Compare All Models"
 COMPARE_MODAL_HEADING = "Comparing All Models"
 COMPARE_MODAL_BODY = (

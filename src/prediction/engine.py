@@ -44,6 +44,12 @@ MODEL_LABELS = {
     "prophet": "Prophet",
 }
 
+# Single source of truth for the horizon-selector display labels (WR-03):
+# co-located with VALID_HORIZONS (rather than hand-duplicated at the page
+# layer) so the two can never drift apart -- keys must always equal
+# VALID_HORIZONS exactly, enforced by tests/test_prediction_engine.py.
+HORIZON_LABELS = {7: "7 Days", 30: "30 Days", 90: "90 Days"}
+
 
 def _forecast_forward_dispatch(
     model_name: str,

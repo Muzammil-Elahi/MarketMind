@@ -17,6 +17,7 @@ import pytest
 
 from src.prediction import prophet_model
 from src.prediction.engine import (
+    HORIZON_LABELS,
     MODEL_LABELS,
     VALID_HORIZONS,
     VALID_MODELS,
@@ -48,6 +49,15 @@ def test_model_labels_exact_strings_and_order():
         "prophet": "Prophet",
     }
     assert list(MODEL_LABELS.keys()) == ["sma", "xgboost", "prophet"]
+
+
+def test_horizon_labels_keys_match_valid_horizons_exactly():
+    """WR-03: HORIZON_LABELS' keys must always equal VALID_HORIZONS exactly
+    -- both now live in this module (single source of truth) specifically
+    so they can never drift apart and trigger an uncaught KeyError in
+    search.py's format_func at render time."""
+    assert set(HORIZON_LABELS) == VALID_HORIZONS
+    assert HORIZON_LABELS == {7: "7 Days", 30: "30 Days", 90: "90 Days"}
 
 
 def test_generate_forecast_raises_value_error_for_invalid_model():
