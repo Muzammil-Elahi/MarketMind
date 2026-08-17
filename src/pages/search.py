@@ -84,6 +84,19 @@ FORECAST_ERROR_MESSAGE = (
 )
 HORIZON_LABELS = {7: "7 Days", 30: "30 Days", 90: "90 Days"}
 
+COMPARE_ALL_MODELS_LABEL = "Compare All Models"
+COMPARE_MODAL_HEADING = "Comparing All Models"
+COMPARE_MODAL_BODY = (
+    "Training and backtesting all 3 models can take a while (Prophet in "
+    "particular). This page will stay open while it runs."
+)
+COMPARE_PERSISTENT_BANNER = (
+    "Comparing all models for this asset — this may take a moment."
+)
+COMPARE_TOAST_MESSAGE = "Model comparison ready."
+COMPARE_START_BUTTON_LABEL = "Start Comparison"
+COMPARE_RESULTS_HEADING = "Model Comparison"
+
 
 @st.cache_data(ttl=CACHE_TTL_SECONDS, show_spinner=False)
 def resolve_forecast_request(
@@ -253,6 +266,8 @@ def _render_prediction_section(ticker: str, asset_class: str) -> None:
         st.warning(INSUFFICIENT_HISTORY_MESSAGE)
         return
 
+    _render_compare_all_models(ticker, horizon_choice, prediction_data, asset_class)
+
     if model_choice is None:
         st.caption(PRE_GENERATION_HINT)
         return
@@ -303,3 +318,68 @@ def _render_backtest_metrics_table(backtest_metrics: dict) -> None:
     with st.container(border=True):
         for key in ("rmse", "directional_accuracy", "sharpe"):
             st.metric(METRIC_LABELS[key], display_values[key])
+
+
+@st.dialog(COMPARE_MODAL_HEADING)
+def _compare_all_models_dialog(ticker: str) -> None:
+    """D-06 modal: warns about the time cost, then hands off to the
+    persistent banner + sequential comparison loop in
+    ``_render_compare_all_models`` on the next rerun."""
+    st.warning(COMPARE_MODAL_BODY)
+    if st.button(COMPARE_START_BUTTON_LABEL, key=f"start_compare_{ticker}"):
+        st.session_state[f"comparing_{ticker}"] = True
+        st.rerun()
+
+
+def _render_compare_all_models(
+    ticker: str, horizon_days: int, prediction_data: dict, asset_class: str
+) -> None:
+    """Render D-06's "Compare All Models" button, dialog trigger,
+    persistent in-progress banner, and the resulting 3-column
+    fixed-order (sma, xgboost, prophet) comparison view.
+
+    Reuses ``resolve_forecast_request`` (Plan 08's cached wrapper) for
+    each of the 3 models sequentially -- never in parallel (single-CPU
+    free-tier container, T-04-03) -- so a model already generated via
+    the single-model flow above is served from cache, not retrained.
+    """
+    compare_clicked = st.button(
+        COMPARE_ALL_MODELS_LABEL,
+        disabled=(prediction_data["status"] != "ok"),
+        key=f"compare_all_{ticker}",
+    )
+    if compare_clicked:
+        _compare_all_models_dialog(ticker)
+
+    if st.session_state.get(f"comparing_{ticker}"):
+        st.warning(COMPARE_PERSISTENT_BANNER)
+        compare_results = {}
+        with st.spinner(COMPARE_MODAL_HEADING):
+            for model_key in MODEL_LABELS:
+                compare_results[model_key] = resolve_forecast_request(
+                    ticker,
+                    model_key,
+                    horizon_days,
+                    prediction_data["feature_frame"],
+                    prediction_data["price_series"],
+                    asset_class,
+                )
+        st.session_state[f"compare_results_{ticker}_{horizon_days}"] = compare_results
+        st.session_state[f"comparing_{ticker}"] = False
+        st.toast(COMPARE_TOAST_MESSAGE, icon=":material/check_circle:")
+        st.rerun()
+
+    compare_results = st.session_state.get(f"compare_results_{ticker}_{horizon_days}")
+    if compare_results is not None:
+        st.subheader(COMPARE_RESULTS_HEADING)
+        columns = st.columns(3)
+        for column, model_key in zip(columns, MODEL_LABELS):
+            with column:
+                st.write(f"**{MODEL_LABELS[model_key]}**")
+                model_result = compare_results[model_key]
+                if model_result["status"] == "prophet_unavailable":
+                    st.warning(PROPHET_UNAVAILABLE_MESSAGE)
+                elif model_result["status"] == "error":
+                    st.error(FORECAST_ERROR_MESSAGE)
+                else:
+                    _render_backtest_metrics_table(model_result["backtest_metrics"])
