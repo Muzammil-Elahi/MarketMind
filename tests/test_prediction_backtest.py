@@ -18,7 +18,13 @@ import pytest
 from src.prediction import prophet_model
 from src.prediction.backtest import MODEL_ENDPOINT_FNS, run_backtest
 from src.prediction.walk_forward import make_folds
-from tests._prediction_fixtures import sample_feature_frame_and_price_series
+
+# Bare top-level import, not `tests._prediction_fixtures` -- pytest's
+# default "prepend" import mode inserts this `tests/` directory itself
+# onto sys.path (since it has no __init__.py), and a globally installed
+# `tests` PyPI package (unrelated to this project) shadows any
+# `tests.<module>` dotted import in this environment.
+from _prediction_fixtures import sample_feature_frame_and_price_series
 
 HORIZON_DAYS = 7
 
