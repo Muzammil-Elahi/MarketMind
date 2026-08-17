@@ -103,7 +103,15 @@ def test_forecast_forward_first_day_closer_to_today_than_endpoint_is():
     assert day1_distance < endpoint_distance
 
 
-def test_forecast_forward_band_width_zero_at_start_full_at_end():
+def test_forecast_forward_band_width_scales_from_partial_to_full_endpoint_width():
+    """Band width follows endpoint_width * sqrt(t / horizon_days), sampled
+    at t=1..horizon_days (index 0 = day 1, the first forecastable day --
+    "today", t=0, is never itself part of the returned path). This proves
+    the sqrt(t / horizon_days) scaling reaches exactly the endpoint width
+    at the last index (t=horizon_days), and a smaller, correctly-scaled
+    partial width at the first index (t=1) -- not more, not less, and
+    never the literal t=0 zero-width boundary since day 1 already carries
+    forecast uncertainty (04-RESEARCH.md Pattern 3 Design Note, A-03)."""
     features, close = _sample_features_and_close(n_rows=60)
     horizon_days = 7
 
@@ -112,9 +120,11 @@ def test_forecast_forward_band_width_zero_at_start_full_at_end():
 
     band_width = result["ci_upper"] - result["ci_lower"]
     endpoint_width = endpoint["ci_upper_endpoint"] - endpoint["ci_lower_endpoint"]
+    expected_first_width = endpoint_width * np.sqrt(1 / horizon_days)
 
-    np.testing.assert_allclose(band_width[0], 0.0, atol=1e-9)
+    np.testing.assert_allclose(band_width[0], expected_first_width, rtol=1e-6)
     np.testing.assert_allclose(band_width[-1], endpoint_width, rtol=1e-6)
+    assert all(band_width[i] <= band_width[i + 1] for i in range(len(band_width) - 1))
 
 
 def test_forecast_forward_bounds_hold_for_every_step():
