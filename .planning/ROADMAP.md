@@ -136,7 +136,7 @@ Plans:
   3. The forecast chart displays confidence intervals around the future prediction.
   4. User can see backtested accuracy (RMSE, directional accuracy, Sharpe) per model, computed via walk-forward validation with no lookahead bias.
 
-**Plans**: 2/9 plans executed
+**Plans**: 5/9 plans executed
 Plans:
 **Wave 1**
 
@@ -145,9 +145,9 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 04-03-PLAN.md — Walk-forward fold generator (TimeSeriesSplit) + shared backtest metrics module
-- [ ] 04-04-PLAN.md — SMA baseline model + XGBoost direct-horizon quantile model
-- [ ] 04-05-PLAN.md — Prophet model, import-guarded
+- [x] 04-03-PLAN.md — Walk-forward fold generator (TimeSeriesSplit) + shared backtest metrics module
+- [x] 04-04-PLAN.md — SMA baseline model + XGBoost direct-horizon quantile model
+- [x] 04-05-PLAN.md — Prophet model, import-guarded
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
@@ -203,7 +203,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | 1. Foundation — Data Layer, Caching & Auth | 5/5 | Complete    | 2026-07-18 |
 | 2. Investor Profile + Feature Engineering Foundation | 4/4 | Complete    | 2026-08-03 |
 | 3. Deterministic Recommendation Engine | 8/8 | Complete    | 2026-08-09 |
-| 4. Multi-Model Prediction + Walk-Forward Backtesting | 2/9 | In Progress|  |
+| 4. Multi-Model Prediction + Walk-Forward Backtesting | 5/9 | In Progress|  |
 | 5. LLM Agent Layer (Rerank + Explain) | 0/TBD | Not started | - |
 | 6. Compliance, Watchlist & Launch Readiness | 0/TBD | Not started | - |
 
