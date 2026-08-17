@@ -83,6 +83,21 @@ def test_fetch_scorable_row_ok_for_sufficient_history():
     assert not pd.isna(feature_row["rsi_14"])
 
 
+def test_fetch_scorable_row_uses_provided_ohlcv_df_without_calling_fetch_ohlcv():
+    """WR-01: when a caller (e.g. the search page) already fetched a wider
+    frame for this ticker, fetch_scorable_row must use it as-is instead of
+    performing its own redundant live fetch -- proven via a mock-call-count
+    assertion on the underlying fetch_ohlcv chokepoint, not just a
+    return-value check."""
+    full_df = _sample_ohlcv(n_rows=60)
+    with patch("src.pages._universe_loader.fetch_ohlcv") as mock_fetch_ohlcv:
+        result = fetch_scorable_row("AAPL", "Stocks", "Tech", ohlcv_df=full_df)
+
+    mock_fetch_ohlcv.assert_not_called()
+    assert result["status"] == "ok"
+    pd.testing.assert_frame_equal(result["chart_df"], full_df)
+
+
 def test_load_asset_feature_row_returns_none_when_not_scorable():
     with patch(
         "src.pages._universe_loader.fetch_ohlcv",

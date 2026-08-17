@@ -122,8 +122,27 @@ def resolve_forecast_request(
     return generate_forecast(ticker, model, horizon_days, feature_frame, price_series, asset_class)
 
 
-def resolve_search_result(ticker: str, profile: dict) -> dict:
+def _slice_trailing_year(df: pd.DataFrame) -> pd.DataFrame:
+    """Slice ``df`` (assumed sorted, ``DatetimeIndex``) to its trailing
+    ~1 year of rows, approximating ``fetch_ohlcv(ticker, period="1y")``'s
+    window so a wider already-fetched frame can stand in for a fresh 1y
+    fetch without changing the caller's scoring/display window (WR-01)."""
+    if df.empty:
+        return df
+    cutoff = df.index.max() - pd.DateOffset(years=1)
+    return df.loc[df.index >= cutoff]
+
+
+def resolve_search_result(ticker: str, profile: dict, prediction_data: dict | None = None) -> dict:
     """Resolve a free-text ticker search into a testable result dict.
+
+    ``prediction_data``, when provided, is the already-fetched 5y result
+    dict from ``fetch_prediction_data`` for the same ``ticker`` -- its
+    ``chart_df`` (when present) is sliced to the trailing ~1 year and
+    passed through to ``fetch_scorable_row`` in place of a fresh live
+    fetch, avoiding a redundant yfinance call for the same ticker
+    (WR-01). Defaults to ``None`` (unchanged fresh-fetch behavior) so
+    existing callers/tests are unaffected.
 
     Returns one of:
     - ``{"status": "empty_query"}`` -- blank/whitespace-only input; no
@@ -146,7 +165,12 @@ def resolve_search_result(ticker: str, profile: dict) -> dict:
 
     asset_class = infer_asset_class(ticker)
     sector = ASSET_CLASS_SECTORS.get(ticker)
-    result = fetch_scorable_row(ticker, asset_class, sector)
+
+    ohlcv_df = None
+    if prediction_data is not None and "chart_df" in prediction_data:
+        ohlcv_df = _slice_trailing_year(prediction_data["chart_df"])
+
+    result = fetch_scorable_row(ticker, asset_class, sector, ohlcv_df=ohlcv_df)
 
     if result["status"] == "not_found":
         return {"status": "not_found", "ticker": ticker}
@@ -198,7 +222,12 @@ def render_search_page() -> None:
         st.caption(EMPTY_STATE_MESSAGE)
         return
 
-    result = resolve_search_result(active_ticker, profile)
+    # Fetched once here (5y) and threaded through both resolve_search_result
+    # (which slices it to 1y for scoring/display) and _render_prediction_section
+    # -- avoids the redundant separate 1y + 5y live fetches WR-01 flagged
+    # for the same searched ticker.
+    prediction_data = fetch_prediction_data(active_ticker)
+    result = resolve_search_result(active_ticker, profile, prediction_data)
 
     if result["status"] == "not_found":
         st.error(NOT_FOUND_TEMPLATE.format(ticker=result["ticker"]))
@@ -208,7 +237,7 @@ def render_search_page() -> None:
         st.warning(INSUFFICIENT_DATA_BADGE)
         st.write(INSUFFICIENT_DATA_BODY_TEMPLATE.format(ticker=result["ticker"]))
         render_price_history_chart(result["chart_df"], key=f"chart_{result['ticker']}")
-        _render_prediction_section(result["ticker"], infer_asset_class(result["ticker"]))
+        _render_prediction_section(result["ticker"], infer_asset_class(result["ticker"]), prediction_data)
         return
 
     st.subheader(result["ticker"])
@@ -217,19 +246,22 @@ def render_search_page() -> None:
     st.subheader(BREAKDOWN_HEADING)
     render_breakdown_bar_chart(result["sub_scores_display"], key=f"breakdown_{result['ticker']}")
     st.write(result["explanation"])
-    _render_prediction_section(result["ticker"], infer_asset_class(result["ticker"]))
+    _render_prediction_section(result["ticker"], infer_asset_class(result["ticker"]), prediction_data)
 
 
-def _render_prediction_section(ticker: str, asset_class: str) -> None:
+def _render_prediction_section(ticker: str, asset_class: str, prediction_data: dict) -> None:
     """Render the D-01/D-02/D-03/D-04/D-05/D-07/D-08 single-model
     prediction flow below the historical price chart/breakdown.
 
-    Defensively returns silently if ``fetch_prediction_data`` reports
+    ``prediction_data`` is the already-fetched ``fetch_prediction_data(ticker)``
+    result, passed in by the caller (``render_search_page``) so this
+    function no longer performs its own redundant fetch (WR-01).
+
+    Defensively returns silently if ``prediction_data`` reports
     ``"not_found"`` -- should not normally occur, since the caller already
     proved this ticker resolves via ``resolve_search_result``, mirroring
     that function's own documented defensive-fallback precedent.
     """
-    prediction_data = fetch_prediction_data(ticker)
     if prediction_data["status"] == "not_found":
         return
 

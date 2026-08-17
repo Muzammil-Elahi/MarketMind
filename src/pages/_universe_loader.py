@@ -14,6 +14,8 @@ reliable features) so callers can render the correct distinct UI state.
 
 import logging
 
+import pandas as pd
+
 from src.data.prices import fetch_ohlcv
 from src.features.feature_frame import assemble_feature_frame
 from src.recommendation.universe import MIN_HISTORY_ROWS
@@ -21,8 +23,20 @@ from src.recommendation.universe import MIN_HISTORY_ROWS
 logger = logging.getLogger(__name__)
 
 
-def fetch_scorable_row(ticker: str, asset_class: str, sector: str | None) -> dict:
+def fetch_scorable_row(
+    ticker: str,
+    asset_class: str,
+    sector: str | None,
+    ohlcv_df: pd.DataFrame | None = None,
+) -> dict:
     """Fetch and assemble one asset's scorable feature row.
+
+    ``ohlcv_df``, when provided, is an already-fetched OHLCV frame (e.g. a
+    wider-period frame a caller such as the search page already fetched for
+    another purpose) sliced to the trailing ~1 year of rows and used in
+    place of a fresh ``fetch_ohlcv`` call -- this avoids a redundant live
+    fetch for the same ticker (WR-01) while preserving this function's
+    normal 1-year scoring/display window.
 
     Returns one of:
     - ``{"status": "not_found"}`` -- ``fetch_ohlcv`` raised, or returned an
@@ -35,11 +49,14 @@ def fetch_scorable_row(ticker: str, asset_class: str, sector: str | None) -> dic
       values in ``feature_row`` come from the most recent row of the
       dropna'd feature frame.
     """
-    try:
-        df, _source = fetch_ohlcv(ticker)
-    except Exception:
-        logger.exception("fetch_scorable_row failed for %s", ticker)
-        return {"status": "not_found"}
+    if ohlcv_df is not None:
+        df = ohlcv_df
+    else:
+        try:
+            df, _source = fetch_ohlcv(ticker)
+        except Exception:
+            logger.exception("fetch_scorable_row failed for %s", ticker)
+            return {"status": "not_found"}
 
     if df.empty:
         return {"status": "not_found"}

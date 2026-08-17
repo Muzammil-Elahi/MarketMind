@@ -203,6 +203,35 @@ def test_resolve_search_result_single_source_of_truth_matches_build_recommendati
     assert search_result["composite_score"] == aapl_row["composite_score"]
 
 
+def test_resolve_search_result_reuses_prediction_data_chart_df_without_fresh_fetch():
+    """WR-01: when the caller already fetched prediction_data (5y) for this
+    ticker, resolve_search_result must slice its chart_df and pass it
+    through to fetch_scorable_row as ohlcv_df, rather than letting
+    fetch_scorable_row perform its own separate 1y live fetch -- proven via
+    a mock-call-count assertion on the underlying fetch_ohlcv chokepoint."""
+    profile = _minimal_profile()
+    dates = pd.date_range("2020-01-01", periods=1300, freq="D")
+    wide_chart_df = pd.DataFrame({"Close": list(range(1300))}, index=dates)
+    prediction_data = {"status": "ok", "chart_df": wide_chart_df}
+    peer_rows = _synthetic_stocks_peer_rows()
+
+    with (
+        patch("src.pages._universe_loader.fetch_ohlcv") as mock_fetch_ohlcv,
+        patch(
+            "src.pages.search.load_universe_rows",
+            return_value=(peer_rows, []),
+        ),
+    ):
+        result = resolve_search_result("AAPL", profile, prediction_data)
+
+    mock_fetch_ohlcv.assert_not_called()
+    assert result["status"] == "scored"
+    # The chart_df threaded through to fetch_scorable_row must be sliced
+    # down from the full 1300-row wide frame to ~1 year, not passed through
+    # untouched.
+    assert len(result["chart_df"]) < len(wide_chart_df)
+
+
 def test_resolve_search_result_bypasses_hard_exclude():
     """Search deliberately does NOT apply profile_fit's hard-exclude
     filter -- a searched asset outside the user's excluded_sectors still
